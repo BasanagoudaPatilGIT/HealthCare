@@ -1,0 +1,87 @@
+.box-header>.fa, .box-header>.glyphicon, .box-header>.ion, .box-header .box-title{font-size:16px;}
+.btn-sm, .btn-group-sm > .btn {font-size:10px;}
+.modal-lg { width: 950px;}
+
+pre {
+font-family: Source Sans Pro,Helvetica Neue,Helvetica,Arial,sans-serif;
+letter-spacing: 1px;
+hyphens: initial;
+word-break: keep-all;
+display: block;
+padding: 2.5px;
+margin: 0 0 10px;
+font-size: 13px;
+line-height: 1.0;
+color: #333;
+background-color: #fff;
+border: none;
+border-radius: none;
+white-space: -moz-pre-line; /* Mozilla, supported since 1999 */
+white-space: -pre-line; /* Opera */
+white-space: -o-pre-line; /* Opera */
+white-space: pre-line; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
+
+}
+table.dataTable thead .sorting_asc:after {
+content: none;
+}
+
+.version {
+    background-color: #0073b7;
+    padding: 5px;
+    color: #fff;
+}
+
+#fail {
+    background-color: #a43820;
+    padding: 5px;
+    color: #fff;
+}
+#inactive {
+    background-color: #a43820;
+    padding: 5px;
+    color: #fff;
+}
+#pass{
+    background-color: #a2c523;
+    padding: 5px;
+    color: #fff;
+}
+#active {
+    background-color: #a2c523;
+    padding: 5px;
+    color: #fff;
+}
+#notcompleted {
+    background-color: #bcbabe;
+    padding: 5px;
+    color: #fff;
+}
+.field-icon {
+  float: right;
+  margin-left: -25px;
+  margin-top: -25px;
+  position: relative;
+  z-index: 2;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
