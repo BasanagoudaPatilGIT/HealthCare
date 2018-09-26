@@ -56,19 +56,16 @@ class Mobile extends CI_Controller {
 			$menu_array[] = array(
 								  'mypurchase' => "Order",
 								  'stockDetails' => "Stock",
-								  'addProduct' => "New Medicine",
+								  'getproductcode' => "Add Medicine",
 								  'mobiInvoice' => "Invoice",
 								  'mobiLogout' => "Logout"
 			);
 			
-			$auto_code= $this->Product_model->get_productcode(1);
 		
-			$product_code_data[] = array('prodcode' => $auto_code
-					);
+			
 		
 			$mobile_login_data[] = array('userDetails' => $user_array,
 									 'menuDetails' => $menu_array,
-									 'productCode' => $product_code_data
 				);
 			print_r(json_encode($mobile_login_data));
 			}
@@ -213,11 +210,24 @@ class Mobile extends CI_Controller {
 		
 	}
 	
+	public function getproductcode()
+	{
+	$userId = $this->input->post('userId');
+	//$userId = 1002;
+	$data['auto_code'] = $this->Product_model->get_productcode($userId);
+	//print_r($data['auto_code']);
+	$prodcode = $data['auto_code']['series_id'].''.$data['auto_code']['user_id'].''.$data['auto_code']['continues_count'];
+					
+					
+	$product_data[] = array('addproduct' => 'New Medicine',
+								 'productcode' => $prodcode,
+	);
+			print_r(json_encode($product_data));
+	
+	}
 	public function addproduct()
 	{
-	    $data['auto_code'] = $this->Product_model->get_productcode(1);
-		
-		$prodcode = $data['auto_code']['series_id'].''.$data['auto_code']['user_id'].''.$data['auto_code']['continues_count'];
+	    
 		//print_r($prodcode);
 		// Field Validation
 		$this->form_validation->set_rules('productname','Product Name','required');
@@ -290,7 +300,7 @@ class Mobile extends CI_Controller {
 	
 	public function createinvoice()
 	{
-		$userId = this->input->post('userId');
+		$userId = $this->input->post('userId');
 		$auto_code = $this->Product_model->get_productcode($userId);
 	    $lineinvoice = $this->Invoice_model->view_record('DESC');
 		$Mainsubtotal = $this->Invoice_model->get_total_amount($userId);
