@@ -23,7 +23,7 @@ class Product extends CI_Controller {
 	public function addproduct()
 	{
 	    
-		$data['auto_code'] = $this->Product_model->get_productcode($_SESSION['ENT_ID']);
+		$data['auto_code'] = $this->Product_model->get_productcode($_SESSION['ID']);
 		//print_r($data['auto_code']['continues_count']);
 		// Field Validation
 		$this->form_validation->set_rules('productname','Product Name','required');

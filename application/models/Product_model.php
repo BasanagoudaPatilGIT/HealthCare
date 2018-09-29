@@ -87,7 +87,8 @@ class Product_model extends CI_Model
     {
 	$this->db->select('p.*');
 	$this->db->from('tab_series as p');
-	$this->db->where('p.user_id', $userid);
+	$this->db->join('tab_registration as r', 'r.ent_id = p.user_id','left');
+	$this->db->where('r.id', $userid);
 	$this->db->where('p.series_id', 'P');
 	$query = $this->db->get();
 	

@@ -212,11 +212,11 @@ class Mobile extends CI_Controller {
 	
 	public function getproductcode()
 	{
-	$userId = $this->input->post('userId');
-	//$userId = 1002;
+	//$userId = $this->input->post('userId');
+	$userId = 2;
 	$data['auto_code'] = $this->Product_model->get_productcode($userId);
 	//print_r($data['auto_code']);
-	$prodcode = $data['auto_code']['series_id'].''.$data['auto_code']['user_id'].''.$data['auto_code']['continues_count'];
+	$prodcode = $data['auto_code']['series_id'].''.$data['auto_code']['user_id'].'-'.$data['auto_code']['continues_count'];
 					
 					
 	$product_data[] = array('addproduct' => 'New Medicine',
@@ -225,6 +225,7 @@ class Mobile extends CI_Controller {
 			print_r(json_encode($product_data));
 	
 	}
+	
 	public function addproduct()
 	{
 	    
@@ -289,12 +290,11 @@ class Mobile extends CI_Controller {
 				'last_updated'=>mdate($datestring)
 			);
 		
-			$this->Product_model->incriment_productcode_no($data,1,$userId);
+			$this->Product_model->incriment_productcode_no($data,$userId);
 			
-			$new_product_added[] = array('prodAdded' => 'New medicine added successfully'
-				);
+			$new_product_added[] = array('prodAdded' => 'New medicine added successfully');
 				
-			echo json_encode($no_stock_data);
+			echo json_encode($new_product_added);
 	}
 	
 	
