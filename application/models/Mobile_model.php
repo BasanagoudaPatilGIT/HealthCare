@@ -77,14 +77,11 @@ class Mobile_model extends CI_Model
     return $query->result_array();
     }
 	
-	 public function auto_featch_all_stock($prodname,$id)
+	 public function all_stock_count($id)
     {
-	$this->db->select('*');
-	$this->db->like('product_name',$prodname,'BOTH');
     $this->db->where('user_id', $id);
-    $this->db->where('product_qty >', 0);
-	$this->db->order_by('product_qty','ASC');
-    return $this->db->get('tab_product')->result();
+    $this->db->where('product_qty !=', 0);
+	return $this->db->count_all_results('tab_product');	
     }
 	
 	public function auto_featch_low_stock($prodname,$userid)

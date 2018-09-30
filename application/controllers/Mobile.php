@@ -42,6 +42,9 @@ class Mobile extends CI_Controller {
 							
 			$this->Mobile_model->update_logout($data,$userid);
 			$data['login'] = $this->Mobile_model->get_user_detail($email_id,$password);
+			$totalstockcount = $this->Mobile_model->all_stock_count($data['login']['id']);	
+			$lowstockcount = COUNT($this->Mobile_model->low_stock_details($data['login']['id']));	
+			$instockcount = (int)$totalstockcount - (int)$lowstockcount;
 			//print_r($login);
 			$user_array[] = array('userId' => $data['login']['id'],
 									'name' => $data['login']['first_name'].' '.$data['login']['last_name'],
@@ -51,6 +54,9 @@ class Mobile extends CI_Controller {
 									'designation' => $data['login']['designation'],
 									'speciality' => $data['login']['speciality'],
 									'abtSpeciality' => $data['login']['abtspeciality'],
+									'totalstockcount' => $totalstockcount,
+									'lowstockcount' => $lowstockcount,
+									'instockcount' => $instockcount
 			);
 			
 			$menu_array[] = array(
@@ -162,53 +168,7 @@ class Mobile extends CI_Controller {
 	}
 	
 	
-	public function product_search()
-	{
-		$userid = $this->input->post('userId');
-		$product = $this->input->post('productName');
-		$feature = $this->input->post('featureName');
-		//$feature = 'stockdetails';
-		//$userid = '2';
-		//$product = 'Celin';
-		if($feature == 'stockdetails'){
-		$proddetails = $this->Mobile_model->auto_featch_all_stock($product, $userid);
-		}else if($feature == 'mypurchase'){
-		$proddetails = $this->Mobile_model->auto_featch_low_stock($product, $userid);
-		}
-		if(count($proddetails) >0){
-		foreach($proddetails as $row)
-		$stockinbox = (int)$row->product_qty /((int)$row->stripsinbox * (int)$row->pcsinstrip);
-		$stockinstrips = (int)$row->product_qty /(int)$row->pcsinstrip;
-		
-		$result_array[] = array('label' => $row->product_name,
-								'product_id' => $row->id,
-								'product_code' => $row->product_code,
-								'batchno' => $row->batchno,
-								'product_qty' => $row->product_qty,
-								'price' => $row->salerate,
-								'tax' => $row->tax_percent,
-								'stripsinbox' =>$row->stripsinbox,
-								'pcsinstrip' =>$row->pcsinstrip,
-								'stockinbox' =>(int)$stockinbox,
-								'stockinstrips' =>(int)$stockinstrips,
-								'createddatetime' => $row->createddatetime,
-								'status' => $row->status,
-								'user_id' => $row->user_id,
-								'qtylimit' => $row->qtylimit,
-								'packdate' => $row->packdate,
-								'expirydate' => $row->expirydate,
-								'mrp' => $row->mrp,
-								'salerate' => $row->salerate,
-								'purrate' => $row->purrate,
-								'abtproduct' => $row->abtproduct,
-								'batchno' => $row->batchno,
-		);
-		
-		echo json_encode($result_array);
-		}
-					
-		
-	}
+	
 	
 	public function getproductcode()
 	{
@@ -364,7 +324,6 @@ class Mobile extends CI_Controller {
 	}
 	
 	
-	
 	public function mobiLogout()
 	{
 		$mobilogin = 0;
@@ -377,4 +336,51 @@ class Mobile extends CI_Controller {
 		$this->Mobile_model->update_logout($data,$userid);				
 		
 	}
+	/*public function product_search()
+	{
+		$userid = $this->input->post('userId');
+		$product = $this->input->post('productName');
+		$feature = $this->input->post('featureName');
+		//$feature = 'stockdetails';
+		//$userid = '2';
+		//$product = 'Celin';
+		if($feature == 'stockdetails'){
+		$proddetails = $this->Mobile_model->auto_featch_all_stock($product, $userid);
+		}else if($feature == 'mypurchase'){
+		$proddetails = $this->Mobile_model->auto_featch_low_stock($product, $userid);
+		}
+		if(count($proddetails) >0){
+		foreach($proddetails as $row)
+		$stockinbox = (int)$row->product_qty /((int)$row->stripsinbox * (int)$row->pcsinstrip);
+		$stockinstrips = (int)$row->product_qty /(int)$row->pcsinstrip;
+		
+		$result_array[] = array('label' => $row->product_name,
+								'product_id' => $row->id,
+								'product_code' => $row->product_code,
+								'batchno' => $row->batchno,
+								'product_qty' => $row->product_qty,
+								'price' => $row->salerate,
+								'tax' => $row->tax_percent,
+								'stripsinbox' =>$row->stripsinbox,
+								'pcsinstrip' =>$row->pcsinstrip,
+								'stockinbox' =>(int)$stockinbox,
+								'stockinstrips' =>(int)$stockinstrips,
+								'createddatetime' => $row->createddatetime,
+								'status' => $row->status,
+								'user_id' => $row->user_id,
+								'qtylimit' => $row->qtylimit,
+								'packdate' => $row->packdate,
+								'expirydate' => $row->expirydate,
+								'mrp' => $row->mrp,
+								'salerate' => $row->salerate,
+								'purrate' => $row->purrate,
+								'abtproduct' => $row->abtproduct,
+								'batchno' => $row->batchno,
+		);
+		
+		echo json_encode($result_array);
+		}
+					
+		
+	}*/
 }
