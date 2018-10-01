@@ -39,24 +39,10 @@ class Product_model extends CI_Model
 	
 	public function incriment_productcode_no($data,$userid)
     {
-	$this->db->select_max('continues_count');
 	$this->db->where('series_id', 'P');
 	$this->db->where('user_id', $userid);
-	$query = $this->db->get('tab_series');
-	$row = $query->row();
-	if (isset($row))
-	{
-		$max_id = $row->continues_count + 1;
+	$this->db->update('tab_series', $data);	
 	}
-		
-	$data['continues_count'] = $max_id;
-	
-	
-    $this->db->where('id', $id);
-    $this->db->update('tab_series', $data);		
-    }
-	
-	
 	
 	public function view_record($order_by = '')
     {

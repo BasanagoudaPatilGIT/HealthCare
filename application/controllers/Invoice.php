@@ -24,7 +24,7 @@ class Invoice extends CI_Controller {
 	
 	public function createinvoice()
 	{
-		$data['auto_code'] = $this->Product_model->get_productcode(2);
+		$data['auto_code'] = $this->Invoice_model->get_invoicecode($_SESSION['ID']);
 	    $data['lineinvoice'] = $this->Invoice_model->view_record('DESC');
 		$id = $_SESSION['ID'];
 		$data['Mainsubtotal'] = $this->Invoice_model->get_total_amount($id);
@@ -96,6 +96,8 @@ class Invoice extends CI_Controller {
 			
 			$this->Product_model->update_stock($data,$batch);
 			
+			
+			
 			redirect(base_url().'Invoice/createinvoice');  
 			
 		
@@ -106,7 +108,8 @@ class Invoice extends CI_Controller {
 		public function saveinvoice()
 		{
 		
-		$data['auto_code'] = $this->Product_model->get_productcode(2);
+		$data['auto_code'] = $this->Invoice_model->get_invoicecode($_SESSION['ID']);
+		$invoicenum = (int)$data['auto_code']['continues_count'];
 	    $data['lineinvoice'] = $this->Invoice_model->view_record('DESC');
 		$id = $_SESSION['ID'];
 		$data['Mainsubtotal'] = $this->Invoice_model->get_total_amount($id);
@@ -132,7 +135,6 @@ class Invoice extends CI_Controller {
 		}
 		else
 		{
-		$datestring = date('Y-m-d');
 		$data =array
 			(
 				'user_id'=>$_SESSION['ID'],
@@ -144,18 +146,13 @@ class Invoice extends CI_Controller {
 				'total_tax_amt'=>$this->input->post('totaltaxamt'),
 				'fees'=>$this->input->post('fees'),
 				'total_gross_amt'=>$this->input->post('totalgrossamt'),
-				'invoice_no'=>$data['auto_code']['series_id'].''.$data['auto_code']['continues_count'],
+				'invoice_no'=>$data['auto_code']['series_id'].''.$data['auto_code']['user_id'].'-'.$data['auto_code']['continues_count'],
 				
 			);			
 			
 			$this->Invoice_model->add_patient_record($data);
 			
-			$data =array
-			(
-				'last_updated'=>mdate($datestring)
-			);
-		
-			$this->Invoice_model->incriment_invoice_no($data,2);
+			
 			$data['lineinvoice'] = $this->Invoice_model->view_record('DESC');
 			$linecount = count($data['lineinvoice']);
 			for($i=0; $i < $linecount ; $i++){
@@ -180,6 +177,16 @@ class Invoice extends CI_Controller {
 			}
 			
 			$this->Invoice_model->delete_all_record($_SESSION['ID']);
+			
+			$datestring = date('Y-m-d');			
+			$data =array
+			(
+				'last_updated'=>mdate($datestring),
+				'continues_count'=> (int)$invoicenum + 1
+				
+			);
+			//print_r($data);
+			$this->Invoice_model->incriment_invoice_no($data,$_SESSION['ENT_ID']);
 			
 			$this->session->set_flashdata('msg','<div class="alert alert-success alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>

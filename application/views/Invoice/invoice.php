@@ -26,7 +26,7 @@
         </div>
         <!-- /.col -->
         <div class="col-md-9 invoice-col text-right">
-          <b>Invoice No: <?php echo $auto_code['series_id']; echo $auto_code['continues_count']?></b><br>
+          <b>Invoice No: <?php echo $auto_code['series_id'];echo $auto_code['user_id'];echo "-"; echo $auto_code['continues_count']?></b><br>
           <b>Invoice Date:</b> <?php $datestring = date('d-m-Y');
         $time = time(); echo  mdate($datestring, $time)?><br>
         </div>

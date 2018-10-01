@@ -64,22 +64,23 @@
     return $this->db->insert('tab_invoice_h', $data);
     }
     
-	public function incriment_invoice_no($data,$id)
+	public function incriment_invoice_no($data,$userid)
     {
-	$this->db->select_max('continues_count');
-	$this->db->where('id', $id);
-	$query = $this->db->get('tab_series');
-	$row = $query->row();
-	if (isset($row))
-	{
-		$max_id = $row->continues_count + 1;
-	}
-		
-	$data['continues_count'] = $max_id;
+	$this->db->where('series_id','#I');
+	$this->db->where('user_id', $userid);
+	$this->db->update('tab_series', $data);		
+    }
 	
+	public function get_invoicecode($userid)
+    {
+	$this->db->select('p.*');
+	$this->db->from('tab_series as p');
+	$this->db->join('tab_registration as r', 'r.ent_id = p.user_id','left');
+	$this->db->where('r.id', $userid);
+	$this->db->where('p.series_id', '#I');
+	$query = $this->db->get();
 	
-    $this->db->where('id', $id);
-    $this->db->update('tab_series', $data);		
+	return $query->row_array();
     }
 	
     

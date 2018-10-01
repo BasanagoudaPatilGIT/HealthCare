@@ -24,7 +24,7 @@ class Product extends CI_Controller {
 	{
 	    
 		$data['auto_code'] = $this->Product_model->get_productcode($_SESSION['ID']);
-		//print_r($data['auto_code']['continues_count']);
+		$prodcount = (int)$data['auto_code']['continues_count'];
 		// Field Validation
 		$this->form_validation->set_rules('productname','Product Name','required');
 		$this->form_validation->set_rules('productqty','Product Qty','required|numeric');
@@ -93,7 +93,8 @@ class Product extends CI_Controller {
 			$this->Product_model->add_record($data);			
 			$data =array
 			(
-				'last_updated'=>mdate($datestring)
+				'last_updated'=>mdate($datestring),
+				'continues_count'=> (int)$prodcount + 1
 			);
 		
 			

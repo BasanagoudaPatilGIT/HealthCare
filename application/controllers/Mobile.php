@@ -14,7 +14,6 @@ class Mobile extends CI_Controller {
 	
 	function validate_credentials()
 	{
-		
 		$this->load->model('Mobile_model');	
 		$email_id = $this->input->post('email_id');
 		//$imei = $this->input->post('imei');
@@ -47,6 +46,7 @@ class Mobile extends CI_Controller {
 			$instockcount = (int)$totalstockcount - (int)$lowstockcount;
 			//print_r($login);
 			$user_array[] = array('userId' => $data['login']['id'],
+									'entId' => $data['login']['ent_id'],
 									'name' => $data['login']['first_name'].' '.$data['login']['last_name'],
 									'mobileNo' => $data['login']['mobile_no'],
 									'emailId' => $data['login']['email_id'],
@@ -54,6 +54,7 @@ class Mobile extends CI_Controller {
 									'designation' => $data['login']['designation'],
 									'speciality' => $data['login']['speciality'],
 									'abtSpeciality' => $data['login']['abtspeciality'],
+									
 									'totalstockcount' => $totalstockcount,
 									'lowstockcount' => $lowstockcount,
 									'instockcount' => $instockcount
@@ -63,7 +64,7 @@ class Mobile extends CI_Controller {
 								  'mypurchase' => "Order",
 								  'stockDetails' => "Stock",
 								  'getproductcode' => "Add Medicine",
-								  'mobiInvoice' => "Invoice",
+								  'getinvoicecode' => "Invoice",
 								  'mobiLogout' => "Logout"
 			);
 			
@@ -172,8 +173,8 @@ class Mobile extends CI_Controller {
 	
 	public function getproductcode()
 	{
-	//$userId = $this->input->post('userId');
-	$userId = 2;
+	$userId = $this->input->post('userId');
+	//$userId = 2;
 	$data['auto_code'] = $this->Product_model->get_productcode($userId);
 	//print_r($data['auto_code']);
 	$prodcode = $data['auto_code']['series_id'].''.$data['auto_code']['user_id'].'-'.$data['auto_code']['continues_count'];
@@ -181,6 +182,7 @@ class Mobile extends CI_Controller {
 					
 	$product_data[] = array('addproduct' => 'New Medicine',
 								 'productcode' => $prodcode,
+								 'productcount' =>$data['auto_code']['continues_count']
 	);
 			print_r(json_encode($product_data));
 	
@@ -189,26 +191,13 @@ class Mobile extends CI_Controller {
 	public function addproduct()
 	{
 	    
-		//print_r($prodcode);
-		// Field Validation
-		$this->form_validation->set_rules('productname','Product Name','required');
-		$this->form_validation->set_rules('productqty','Product Qty','required|numeric');
-		$this->form_validation->set_rules('mrp','MRP','required|decimal');
-		$this->form_validation->set_rules('purrate','Purchase Rate','required|decimal');
-		$this->form_validation->set_rules('salerate','Sale Rate','required|decimal');
-		$this->form_validation->set_rules('packdate','Pack Date','required');
-		$this->form_validation->set_rules('expdate','Expiry Date','required');
-		$this->form_validation->set_rules('cbo_uom','Product UOM','required');
-		$this->form_validation->set_rules('strips','Strips in Boxs.','required|numeric|is_natural_no_zero');
-		$this->form_validation->set_rules('pcs','Pcs in Stript.','required|numeric|is_natural_no_zero');
-		$this->form_validation->set_rules('qtylmt','Quantity Limit','required|numeric|is_natural_no_zero');
-		$this->form_validation->set_rules('taxper','Tax Percent','required|decimal');
-		
-
+		$productcount = (int)$this->input->post('productcount');
 		$uom = $this->input->post('cbo_uom');
 		$prodqty = $this->input->post('productqty');
 		$userId = $this->input->post('userId');
-		print_r($uom);
+		$entId = $this->input->post('entId');
+		$prodcode = $this->input->post('productcode');
+		//print_r($uom);
 		if($uom === 'Box'){
 			//print_r($uom);
 			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs');
@@ -223,7 +212,7 @@ class Mobile extends CI_Controller {
 		$batchno = $prodcode.'-'.(String)$this->input->post('expdate').'-'.(int)$this->input->post('mrp').'-'.(int)$this->input->post('purrate').'-'.(int)$this->input->post('salerate');
 		
 		
-		$datestring = date('Y-m-d');
+		
 		$data =array
 			(
 				'status'=>'Active',
@@ -244,34 +233,56 @@ class Mobile extends CI_Controller {
 				'tax_percent'=>$this->input->post('taxper')
 				
 			);	
-			$this->Product_model->add_record($data);			
+			$this->Product_model->add_record($data);
+
+			$datestring = date('Y-m-d');			
 			$data =array
 			(
-				'last_updated'=>mdate($datestring)
+				'last_updated'=>mdate($datestring),
+				'continues_count' => (int)$productcount + 1 
+				
 			);
 		
-			$this->Product_model->incriment_productcode_no($data,$userId);
+			$this->Mobile_model->incriment_productcode_no($data,$entId);
 			
 			$new_product_added[] = array('prodAdded' => 'New medicine added successfully');
 				
-			echo json_encode($new_product_added);
+			print_r(json_encode($new_product_added));
 	}
+	
+	
+	public function getinvoicecode()
+	{
+	$userId = $this->input->post('userId');
+	//$userId = 2;
+	$data['auto_code'] = $this->Mobile_model->get_invoicecode($userId);
+	//print_r($data['auto_code']);
+	$invoicecode = $data['auto_code']['series_id'].''.$data['auto_code']['user_id'].'-'.$data['auto_code']['continues_count'];
+					
+					
+	$invoice_data[] = array('createinvoice' => 'Invoice',
+								 'invoicecode' => $invoicecode,
+								 'invoicecount' =>$data['auto_code']['continues_count']
+	);
+			print_r(json_encode($invoice_data));
+	
+	}
+	
 	
 	
 	public function createinvoice()
 	{
 		$userId = $this->input->post('userId');
-		$auto_code = $this->Product_model->get_productcode($userId);
+		$entId = $this->input->post('entId');
+		$invoicecount = (int)$this->input->post('invoicecount');
+		
+		/* $auto_code = $this->Product_model->get_productcode($userId);
 	    $lineinvoice = $this->Invoice_model->view_record('DESC');
 		$Mainsubtotal = $this->Invoice_model->get_total_amount($userId);
 		$Maintaxpercent = $this->Invoice_model->get_total_tax_percent($userId);
 		$MaintaxAmt = $this->Invoice_model->get_total_tax_amt($userId);
 		$MainAmt = $this->Invoice_model->get_total_amt($userId);
 		$prodcount = $this->Invoice_model->products_count($userId) ;
-		
-		
-		$this->form_validation->set_rules('productname','Product Name','required');
-		$this->form_validation->set_rules('qty','Quantity','required|numeric|is_natural_no_zero');
 		
 		
 		$uom = $this->input->post('cbo_uom');
@@ -318,9 +329,23 @@ class Mobile extends CI_Controller {
 			);
 			}
 			
-			$this->Product_model->update_stock($data,$batch);
+			$this->Product_model->update_stock($data,$batch); */
 			
 		
+			$datestring = date('Y-m-d');			
+			$data =array
+			(
+				'last_updated'=>mdate($datestring),
+				'continues_count' => (int)$invoicecount + 1 
+				
+			);
+			//print_r($data);
+			$this->Mobile_model->incriment_invoice_no($data,$entId);
+			
+			$new_invoice_generated[] = array('invoicegenerated' => 'Invoice generated successfully');
+				
+			print_r(json_encode($new_invoice_generated));
+			
 	}
 	
 	
@@ -336,6 +361,9 @@ class Mobile extends CI_Controller {
 		$this->Mobile_model->update_logout($data,$userid);				
 		
 	}
+	
+	
+	
 	/*public function product_search()
 	{
 		$userid = $this->input->post('userId');

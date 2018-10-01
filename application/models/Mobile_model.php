@@ -23,6 +23,19 @@ class Mobile_model extends CI_Model
 		}
 	}
 	
+	public function incriment_productcode_no($data,$userid)
+    {
+	$this->db->where('series_id', 'P');
+	$this->db->where('user_id', $userid);
+	$this->db->update('tab_series', $data);	
+    }
+	
+	public function incriment_invoice_no($data,$userid)
+    {
+	$this->db->where('series_id', '#I');
+	$this->db->where('user_id', $userid);
+	$this->db->update('tab_series', $data);	
+    }
 	
 	public function get_user_detail($email_id,$password)
 	{
@@ -94,5 +107,17 @@ class Mobile_model extends CI_Model
     return $this->db->get('tab_product')->result();
 	
 	
+    }
+	
+	public function get_invoicecode($userid)
+    {
+	$this->db->select('p.*');
+	$this->db->from('tab_series as p');
+	$this->db->join('tab_registration as r', 'r.ent_id = p.user_id','left');
+	$this->db->where('r.id', $userid);
+	$this->db->where('p.series_id', '#I');
+	$query = $this->db->get();
+	
+	return $query->row_array();
     }
  }
