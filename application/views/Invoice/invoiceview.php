@@ -110,7 +110,7 @@
 					  <tr>
 						<th style="padding-top: 20px;">Fees:</th>
 						<td width="25%">
-						<input class="form-control text-center" id="fees" name="fees" type="number" readonly=""
+						<input class="form-control text-center" id="fees" name="fees" type="text" readonly=""
 				 		value="<?php echo $invoice_header['fees'];?>">
 						</td>
 						

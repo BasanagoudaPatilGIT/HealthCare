@@ -148,7 +148,7 @@
 							$cbo_uom = 
 							 array(   
 										'' => '- SELECT - ',
-										'Box' => 'Boxs',
+										'Boxes' => 'Boxes',
 										'Strips' =>'Strips',
 										'Pcs' =>'Pcs'
 									  

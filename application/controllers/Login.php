@@ -23,19 +23,25 @@ class Login extends CI_Controller {
 	
 	function validate_credentials()
 	{
-		
+		$username = $this->input->post('username');
+		$password = base64_encode($this->input->post('password'));
 		$this->load->model('Login_info_model');	
-		$query = $this->Login_info_model->validate();
+		$query = $this->Login_info_model->validate($username,$password);
 		//echo $this->input->post('username');
-		print_r( $query );
+		//print_r( $query );
 		
 		//Form Validation
-		
+		$todaysdate = date('Y-m-d');
+		$exp = $this->Login_info_model->validate_expiry($username,$todaysdate);
+		if(!$exp){
+			$this->session->set_flashdata('msg',' Your application service got expired');
+			redirect(base_url().'Login/index');	
+		}else{
+			
 		if($query)
 		{
-			$email_id = $this->input->post('email_id');
-			$password = base64_encode($this->input->post('password'));
-			$loginData['login_data'] = $this->Login_info_model->get_user_detail($email_id,$password);
+			
+			$loginData['login_data'] = $this->Login_info_model->get_user_detail($username,$password);
 			$data=array(				
 				'IS_LOGGED_IN'=>'TRUE',
 				'ID'=> $loginData['login_data']['id'],
@@ -96,7 +102,7 @@ class Login extends CI_Controller {
 			redirect(base_url().'Login/index');				
 		}
 	}
-	
+	}
 	public function logout()
 	{
 		$this->load->model('Login_info_model');	

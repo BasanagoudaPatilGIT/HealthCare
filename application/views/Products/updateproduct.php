@@ -50,6 +50,14 @@
                   <input class="form-control" id="batch" name="batch" type="text" readonly="" placeholder="Batch No."  
 				 value="<?php echo $product_row['batchno'] ?>">
                 </div>
+				<div class="form-group col-md-12">
+                  <label for="taxper">
+                  Tax %
+                  </label>
+                  <input class="form-control" id="taxper" name="taxper" type="text" placeholder="Tax %"
+				 value="<?php echo $product_row['tax_percent']?>">
+				  <?php echo form_error('taxper','<div style="color:#FF0000;">','</div>'); ?> 
+				  </div>
                 <div class="form-group col-sm-12">
                   <label for="abtproduct">About Product </label>
                   <textarea class="form-control" rows="3" id="abtproduct" name="abtproduct" cols="10" placeholder="Enter About Product"
@@ -149,7 +157,7 @@
 							$cbo_uom = 
 							 array(   
 										'' => '- Select - ',
-										'Box' => 'Boxs',
+										'Boxes' => 'Boxes',
 										'Strips' =>'Strips',
 										'Pcs' =>'Pcs'
 									  

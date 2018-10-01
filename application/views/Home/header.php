@@ -72,7 +72,7 @@
 
 				<p>
                   <?php echo $_SESSION['USER_FULL_NAME'] ?> - 
-				  <?php echo $_SESSION['EMP_ID'] ?><br/>
+				  <?php echo $_SESSION['ENT_ID'] ?><br/>
 				  <?php echo $_SESSION['EMAIL_ID'] ?><br/>
 				  <?php echo $_SESSION['USER_TYPE'] ?><br/>
                 </p>

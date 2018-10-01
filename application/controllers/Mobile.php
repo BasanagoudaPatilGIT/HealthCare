@@ -21,13 +21,13 @@ class Mobile extends CI_Controller {
 		//$email_id = "vinod@gmail.com";
 		$imei = 0;
 		//$password = base64_encode("9964546749");
-		
+		$todaysdate = date('Y-m-d');
+		$exp = $this->Mobile_model->validate_expiry($imei,$todaysdate);
+		if(!$exp){
+			$login_failed_data[] = array('loginFailed' => 'Your application service got expired');
+			print_r(json_encode($login_failed_data));
+		}else{
 		$query = $this->Mobile_model->validate($email_id,$password,$imei);
-		//echo $this->input->post('username');
-		//print_r( $query );
-		
-		//Form Validation
-		
 		if($query)
 		{
 			$data['login'] = $this->Mobile_model->get_user_detail($email_id,$password);
@@ -81,6 +81,10 @@ class Mobile extends CI_Controller {
 			$login_failed_data[] = array('loginFailed' => 'Invalid Credentials');
 			print_r(json_encode($login_failed_data));				
 		}
+		}
+		
+		
+		
 	}
 	
 	
@@ -198,7 +202,7 @@ class Mobile extends CI_Controller {
 		$entId = $this->input->post('entId');
 		$prodcode = $this->input->post('productcode');
 		//print_r($uom);
-		if($uom === 'Box'){
+		if($uom === 'Boxes'){
 			//print_r($uom);
 			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs');
 		}elseif($uom === 'Strips'){

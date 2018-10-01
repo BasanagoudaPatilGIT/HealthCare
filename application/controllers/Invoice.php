@@ -70,7 +70,7 @@ class Invoice extends CI_Controller {
 			);			
 			
 			$this->Invoice_model->add_record($data);
-			if($uom === 'Boxs'){
+			if($uom === 'Boxes'){
 			$upqty = (int)$this->input->post('qty') * (int)$this->input->post('stripsinbox') * (int)$this->input->post('pcsinstrip');
 			$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
 			//print_r($stock);
@@ -214,8 +214,6 @@ class Invoice extends CI_Controller {
 		
 		if(count($proddetails) >0){
 		foreach($proddetails as $row)
-		$stockinbox = (int)$row->product_qty /((int)$row->stripsinbox * (int)$row->pcsinstrip);
-		$stockinstrips = (int)$row->product_qty /(int)$row->pcsinstrip;
 		
 		$result_array[] = array('label' => $row->product_name,
 								'id' => $row->id,
@@ -226,8 +224,8 @@ class Invoice extends CI_Controller {
 								'tax' => $row->tax_percent,
 								'stripsinbox' =>$row->stripsinbox,
 								'pcsinstrip' =>$row->pcsinstrip,
-								'stockinbox' =>(int)$stockinbox,
-								'stockinstrips' =>(int)$stockinstrips
+								'stockinbox' =>(int)((int)$row->product_qty /((int)$row->stripsinbox * (int)$row->pcsinstrip)),
+								'stockinstrips' =>(int)((int)$row->product_qty /(int)$row->pcsinstrip)
 		);
 		
 		echo json_encode($result_array);

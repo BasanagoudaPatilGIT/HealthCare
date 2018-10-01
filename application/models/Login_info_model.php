@@ -8,15 +8,14 @@ class Login_info_model extends CI_Model
 		$this->load->library('encrypt');
 	}
 	
-	public function validate()
+	public function validate($username,$password)
 	{
 		
-		$mailid = $this->input->post('email_id');
-		$password = base64_encode($this->input->post('password'));
-		$this->db->where('email_id', $mailid );
+		
+		$this->db->where('username', $username );
 		$this->db->where('password', $password );
 		$query= $this->db->get('tab_registration');
-		print_r( $query->row_array() );
+		//print_r( $query->row_array() );
 		if($query->num_rows() == 1)
 		{
 			return $query->row_array();
@@ -25,12 +24,25 @@ class Login_info_model extends CI_Model
 		}
 	}
 	
+	public function validate_expiry($username,$todaysdate)
+	{
+		$this->db->where('username',$username);
+		$this->db->where('service_expiry_Date >=', $todaysdate);
+		$query= $this->db->get('tab_registration');
+		//print_r( $query->row_array() );
+		if($query->num_rows() == 1)
+		{
+			return $query->row_array();
+		}else{
+			return false;
+		}
+	}
 	
-	public function get_user_detail($email_id,$password)
+	public function get_user_detail($username,$password)
 	{
 		$this->db->select('r.*,d.designation');
 		$this->db->from('tab_registration as r');
-		$this->db->where('email_id', $email_id);
+		$this->db->where('username', $username);
 		$this->db->where('password', $password);
 		$this->db->join('tab_designation as d', 'd.id = r.user_type','left');
 		$query = $this->db->get();

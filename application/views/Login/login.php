@@ -26,16 +26,17 @@
 		 <p style="text-align:center; font-size:16px; font-weight:bolder; color:#FF0000;"><?php echo $this->session->flashdata('msg'); ?></p>
 		
           <div class="form-group">
-            <input class="form-control" name="email_id" id="email_id" type="text"  placeholder="Enter User Name" required>
+            <input class="form-control" name="username" id="username" type="text"  placeholder="UserName" required>
 		  </div>
           <div class="form-group">
             <input class="form-control" name="password" id="password" type="password" placeholder="Password" required>
           </div>
-           <div class="text-right">
-         <a class="d-block small mt-3" href="<?php echo base_url()?>Login/forgot_password">Forgot Password?</a>
-          <a class="d-block small" href="<?php echo base_url()?>Login/registration">Register an Account</a>
-        </div>
+           
 		  <button type="submit" class="btn btn-primary btn-block" style="font-weight:bolder;">Login</button>
+		  <div class="text-right" >
+         <a class="d-block small mt-3" style="visibility: hidden" href="<?php echo base_url()?>Login/forgot_password">Forgot Password?</a>
+          <a class="d-block small" style="visibility: hidden" href="<?php echo base_url()?>Login/registration">Register an Account</a>
+        </div>
         </form>
      </div>
     </div>

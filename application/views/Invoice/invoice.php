@@ -73,7 +73,7 @@
 									$cbo_uom = 
 									 array(   
 												'Pcs' =>'Pcs',
-												'Boxs' => 'Boxs',
+												'Boxes' => 'Boxes',
 												'Strips' =>'Strips'
 												
 											  
@@ -113,7 +113,7 @@
 					</table>
 		
 		<form  method="post" action="<?php echo base_url()?>Invoice/saveinvoice" enctype="multipart/form-data">
-		 <div class="box-body">
+		 <div class="box-body" style="padding:0px">
 		<div class="col-md-8" style="padding:0px">
 		<div class="box" style="min-height:280px">
 			<div class="box-header with-border">
@@ -178,7 +178,7 @@
 				 		value="0.00"></td>
 						<?php }else {?>
 						<td  width="25%">
-						<input class="form-control text-center" id="totalgrossamt" name="totalgrossamt" type="number" readonly=""
+						<input class="form-control text-center" id="totalgrossamt" name="totalgrossamt" type="text" readonly=""
 				 		value="<?php echo $Mainsubtotal['grossamt'];?>">
 						</td>
 						<?php }?>
@@ -190,7 +190,7 @@
 				 		value="0.00"></td>
 						<?php }else {?>
 						<td width="25%">
-						<input class="form-control text-center" id="totaltaxamt" name="totaltaxamt" type="number"  readonly=""
+						<input class="form-control text-center" id="totaltaxamt" name="totaltaxamt" type="text"  readonly=""
 				 		value="<?php echo $MaintaxAmt['totaltaxamt'];?>">
 						
 						</td>
@@ -200,7 +200,7 @@
 					  <tr>
 						<th style="padding-top: 20px;">Fees:</th>
 						<td width="25%">
-						<input class="form-control text-center" id="fees" name="fees" type="number" min="1" 
+						<input class="form-control text-center" id="fees" name="fees" type="number" min="0" placeholder="0" 
 				 		value="<?php echo set_value('fees');?>">
 						<?php echo form_error('fees','<div style="color:#FF0000;">','</div>'); ?> 
 						</td>
@@ -210,11 +210,11 @@
 					  <tr>
 						<th style="padding-top: 20px;">Total:</th>
 						<?php if($Mainsubtotal['grossamt'] == ''){?>
-						<td width="25%"><input class="form-control text-center" type="number" readonly=""
+						<td width="25%"><input class="form-control text-center" type="text" readonly=""
 				 		value="0.00"></td>
 						<?php }else {?>
 						<td width="25%">
-						<input class="form-control text-center" id="totalamt" name="totalamt" type="number"  readonly=""
+						<input class="form-control text-center" id="totalamt" name="totalamt" type="text"  readonly=""
 				 		value="<?php echo $MainAmt['totalamt'];?>">
 						</td>
 						<?php }?></td>

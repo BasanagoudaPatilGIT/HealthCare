@@ -23,6 +23,20 @@ class Mobile_model extends CI_Model
 		}
 	}
 	
+	public function validate_expiry($imei,$todaysdate)
+	{
+		$this->db->where('imei',$imei);
+		$this->db->where('service_expiry_Date >=', $todaysdate);
+		$query= $this->db->get('tab_registration');
+		//print_r( $query->row_array() );
+		if($query->num_rows() == 1)
+		{
+			return $query->row_array();
+		}else{
+			return false;
+		}
+	}
+	
 	public function incriment_productcode_no($data,$userid)
     {
 	$this->db->where('series_id', 'P');

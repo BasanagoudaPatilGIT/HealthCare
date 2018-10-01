@@ -106,6 +106,7 @@ $('[name="stockinpcs"]').val(ui.item.stock);
 $('[name="qty"]').val(1);
 $('[name="lineamount"]').val($('#qty').val() * $('#salerate').val());
 $('[name="linetaxamt"]').val($('#lineamount').val() * $('#tax').val() /100);
+$('[name="cbo_uom"]').val("Pcs");
 }
 });
 });
@@ -135,7 +136,7 @@ $('#cbo_uom').change(function(){
 	if($stock == ''){
 	alert('Select Product Fisrt');
 	}else{
-	if($('#cbo_uom').val() == 'Boxs'){
+	if($('#cbo_uom').val() == 'Boxes'){
 	$('#stock').val($('#stockinbox').val());
 	}else if($('#cbo_uom').val() == 'Strips'){
 	$('#stock').val($('#stockinstrip').val());
@@ -157,7 +158,7 @@ $('#qty').change(function(){
 	$stockinstrip = $('#stockinstrip').val();
 	$stockinpcs = $('#stockinpcs').val();
 	
-	if($('#cbo_uom').val() == 'Boxs'){
+	if($('#cbo_uom').val() == 'Boxes'){
 	if($('#qty').val() >= $stockinbox ){
 	alert("Entered Qty is more than stock");
 	$('#qty').val('');

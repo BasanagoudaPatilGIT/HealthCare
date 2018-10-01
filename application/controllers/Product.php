@@ -55,7 +55,7 @@ class Product extends CI_Controller {
 		$uom = $this->input->post('cbo_uom');
 		$prodqty = $this->input->post('productqty');
 		print_r($uom);
-		if($uom === 'Box'){
+		if($uom === 'Boxes'){
 			//print_r($uom);
 			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs');
 		}elseif($uom === 'Strips'){
@@ -153,7 +153,7 @@ class Product extends CI_Controller {
 			$uom = $this->input->post('cbo_uom');
 		$prodqty = $this->input->post('productqty');
 		print_r($uom);
-		if($uom === 'Box'){
+		if($uom === 'Boxes'){
 			//print_r($uom);
 			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs') + $this->input->post('curqty');
 		}elseif($uom === 'Strips'){
@@ -189,7 +189,7 @@ class Product extends CI_Controller {
 		$uom = $this->input->post('cbo_uom');
 		$prodqty = $this->input->post('productqty');
 		print_r($uom);
-		if($uom === 'Box'){
+		if($uom === 'Boxes'){
 			//print_r($uom);
 			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs');
 		}elseif($uom === 'Strips'){
