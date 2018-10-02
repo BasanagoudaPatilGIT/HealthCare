@@ -11,22 +11,33 @@ class Dashboard extends CI_Controller {
 			redirect(base_url()); 
 		}
 		$this->load->model('User_model');
-		$this->load->model('Project_Details_model');
-		$this->load->model('TestCase_model');
-		$this->load->model('TestReport_model');
+		$this->load->model('Product_model');
+		$this->load->model('Invoice_model');
 		
 		
 		
 	}
+	
 	public function index()
 	{
 		$data['title'] = "HealthCare - Dashboard";
+		if($_SESSION['USER_TYPE'] == 'Admin'){ 
 	 	$data['users'] = $this->User_model->user_count();
-		
-		/*echo"<pre>";
-		print_r($data['pending_task']);
-		echo"</pre>";*/
-		
+	 	$data['patient_count'] = $this->Invoice_model->patient_count($_SESSION['ID']);
+		}else {
+		$data['low_stock'] = count($this->Product_model->low_stock_details($_SESSION['ID']));
+	 	$data['patient_count'] = $this->Invoice_model->patient_count($_SESSION['ID']);
+	 	$data['all_stock'] = $this->Product_model->all_stock_count($_SESSION['ID']);
+	 	$data['totalamount'] = ($this->Invoice_model->total_amount($_SESSION['ID']));
+		$datestring = date('Y-m-d');
+		$data['totdayamount'] = ($this->Invoice_model->todays_total_amount($_SESSION['ID'],$datestring));
+		}
+		//echo "<pre>";
+		//print_r($data['low_stock']);
+		//echo "</pre>";
+		//echo "<pre>";
+		//print_r($data['all_stock']);
+		//echo "</pre>";
 		
 		$this->load->view('Home/header',$data);
 		$this->load->view('Home/menu');

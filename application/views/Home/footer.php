@@ -295,6 +295,24 @@ $.ajax({
 </script>
 
 <script>
+ //DONUT CHART
+    var donut = new Morris.Donut({
+      element: 'sales-chart',
+      resize: true,
+      colors: ["#ff6347","#3cb371"],
+      data: [
+        {label: "Low stock", value: <?php echo $low_stock; ?>},
+        {label: "In Stock", value: <?php echo $all_stock - $low_stock;?>}
+      ],
+      hideHover: 'auto'
+    });
+	
+</script>
+
+
+
+
+<script>
 //date_picker
 
 $('#Doj').datepicker({

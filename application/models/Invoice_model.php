@@ -64,6 +64,11 @@
     return $this->db->insert('tab_invoice_h', $data);
     }
     
+	public function patient_count($id)
+    {
+    $this->db->where('user_id', $id);
+	return $this->db->count_all_results('tab_invoice_h');	
+    }
 	public function incriment_invoice_no($data,$userid)
     {
 	$this->db->where('series_id','#I');
@@ -211,6 +216,18 @@
     $query = $this->db->get();
     return $query->result_array();
     }
+	public function total_amount($userid)
+    {
+    $sql = "select SUM(invoice_amt) as amount from tab_invoice_h  where  user_id = ?";
+    $query = $this->db->query($sql,array($userid));
+    return $query->row_array();
+    }
 	
+	public function todays_total_amount($userid,$datestring)
+    {
+    $sql = "select SUM(invoice_amt) as amount from tab_invoice_h  where user_id = ? and created_date =?";
+    $query = $this->db->query($sql,array($userid,$datestring));
+    return $query->row_array();
+    }
 	
     }

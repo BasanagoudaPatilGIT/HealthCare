@@ -23,6 +23,19 @@ class Product_model extends CI_Model
 		return $this->db->insert('tab_product', $data);
 	}
 	
+	public function low_stock_details($userid)
+    {
+    $sql = "select p.* from tab_product as p join tab_product as q on (p.id = q.id) where p.product_qty <= q.qtylimit and p.user_id = ? and p.status = ?";
+    $query = $this->db->query($sql,array($userid,'Active'));
+    return $query->result_array();
+    }
+	
+	public function all_stock_count($id)
+    {
+    $this->db->where('user_id', $id);
+    $this->db->where('product_qty >', 0);
+	return $this->db->count_all_results('tab_product');	
+    }
 	
 	public function edit_record($data,$id)
     {

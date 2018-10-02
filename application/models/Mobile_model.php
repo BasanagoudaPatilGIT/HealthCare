@@ -104,7 +104,7 @@ class Mobile_model extends CI_Model
     return $query->result_array();
     }
 	
-	 public function all_stock_count($id)
+	public function all_stock_count($id)
     {
     $this->db->where('user_id', $id);
     $this->db->where('product_qty !=', 0);

@@ -7,6 +7,7 @@ class Mobile extends CI_Controller {
 		parent::__construct();
 		$this->load->model('Mobile_model');
 		$this->load->model('Product_model');
+		$this->load->model('Invoice_model');
 		$this->load->library('encrypt');	
 		
 	}
@@ -44,6 +45,12 @@ class Mobile extends CI_Controller {
 			$totalstockcount = $this->Mobile_model->all_stock_count($data['login']['id']);	
 			$lowstockcount = COUNT($this->Mobile_model->low_stock_details($data['login']['id']));	
 			$instockcount = (int)$totalstockcount - (int)$lowstockcount;
+			
+			$patientcount = $this->Invoice_model->patient_count($data['login']['id']);
+			$totalamount = $this->Invoice_model->total_amount($data['login']['id']);
+			$datestring = date('Y-m-d');
+			$totdayamount = $this->Invoice_model->todays_total_amount($data['login']['id'],$datestring);
+		
 			//print_r($login);
 			$user_array[] = array('userId' => $data['login']['id'],
 									'entId' => $data['login']['ent_id'],
@@ -54,10 +61,15 @@ class Mobile extends CI_Controller {
 									'designation' => $data['login']['designation'],
 									'speciality' => $data['login']['speciality'],
 									'abtSpeciality' => $data['login']['abtspeciality'],
-									
 									'totalstockcount' => $totalstockcount,
 									'lowstockcount' => $lowstockcount,
-									'instockcount' => $instockcount
+									'instockcount' => $instockcount,
+									'pendingappointments' => 3,
+									'totalpatients'=> $patientcount,
+									'totalamount'=> $totalamount,
+									'totdayamount'=> $totdayamount,
+									
+									
 			);
 			
 			$menu_array[] = array(

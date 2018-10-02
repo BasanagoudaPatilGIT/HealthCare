@@ -135,6 +135,7 @@ class Invoice extends CI_Controller {
 		}
 		else
 		{
+		$datestring = date('Y-m-d');
 		$data =array
 			(
 				'user_id'=>$_SESSION['ID'],
@@ -144,6 +145,7 @@ class Invoice extends CI_Controller {
 				'patient_address'=>$this->input->post('address'),
 				'invoice_amt'=>$this->input->post('totalamt'),
 				'total_tax_amt'=>$this->input->post('totaltaxamt'),
+				'created_date'=>$datestring,
 				'fees'=>$this->input->post('fees'),
 				'total_gross_amt'=>$this->input->post('totalgrossamt'),
 				'invoice_no'=>$data['auto_code']['series_id'].''.$data['auto_code']['user_id'].'-'.$data['auto_code']['continues_count'],
