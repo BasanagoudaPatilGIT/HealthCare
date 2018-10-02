@@ -9,8 +9,6 @@ class Login extends CI_Controller {
 		
 	}
 	
-
-
 	function index()
 	{
 		$this->load->view('Login/login');
@@ -31,16 +29,16 @@ class Login extends CI_Controller {
 		//print_r( $query );
 		
 		//Form Validation
+		
+			
+		if($query)
+		{
 		$todaysdate = date('Y-m-d');
 		$exp = $this->Login_info_model->validate_expiry($username,$todaysdate);
 		if(!$exp){
 			$this->session->set_flashdata('msg',' Your application service got expired');
 			redirect(base_url().'Login/index');	
 		}else{
-			
-		if($query)
-		{
-			
 			$loginData['login_data'] = $this->Login_info_model->get_user_detail($username,$password);
 			$data=array(				
 				'IS_LOGGED_IN'=>'TRUE',
@@ -95,13 +93,13 @@ class Login extends CI_Controller {
 			$this->Login_info_model->update_logout($data,$userid);	
 			redirect(base_url().'Dashboard/index');
 		}
-		else
+		
+	}else
 		{
 			
 			$this->session->set_flashdata('msg',' Invalid Login Details.');
 			redirect(base_url().'Login/index');				
 		}
-	}
 	}
 	public function logout()
 	{

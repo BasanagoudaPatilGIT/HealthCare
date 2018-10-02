@@ -50,7 +50,7 @@ class Mobile extends CI_Controller {
 			$patientcount = $this->Invoice_model->patient_count($data['login']['id']);
 			$totalamount = $this->Invoice_model->total_amount($data['login']['id']);
 			$datestring = date('Y-m-d');
-			$totdayamount = $this->Invoice_model->todays_total_amount($data['login']['id'],$datestring);
+			$todayamount = $this->Invoice_model->todays_total_amount($data['login']['id'],$datestring);
 		
 			//print_r($login);
 			$user_array[] = array('userId' => $data['login']['id'],
@@ -62,13 +62,13 @@ class Mobile extends CI_Controller {
 									'designation' => $data['login']['designation'],
 									'speciality' => $data['login']['speciality'],
 									'abtSpeciality' => $data['login']['abtspeciality'],
-									'totalstockcount' => $totalstockcount,
-									'lowstockcount' => $lowstockcount,
-									'instockcount' => $instockcount,
-									'pendingappointments' => 3,
-									'totalpatients'=> $patientcount,
-									'totalamount'=> $totalamount,
-									'totdayamount'=> $totdayamount,
+									'totalStockCount' => $totalstockcount,
+									'lowStockCount' => $lowstockcount,
+									'inStockCount' => $instockcount,
+									'pendingAppointments' => 3,
+									'totalPatients'=> $patientcount,
+									'totalAmount'=> $totalamount,
+									'todayAmount'=> $todayamount,
 									
 									
 			);
