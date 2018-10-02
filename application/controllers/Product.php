@@ -122,6 +122,7 @@ class Product extends CI_Controller {
 		}
 		
 		$data['product_row'] = $this->Product_model->get_record_by_id($id);
+		$data['auto_code'] = $this->Product_model->get_productcode($_SESSION['ID']);
 		// Field Validation
 		$this->form_validation->set_rules('productcode','Product Code','required');
 		$this->form_validation->set_rules('productname','Product Name','required');

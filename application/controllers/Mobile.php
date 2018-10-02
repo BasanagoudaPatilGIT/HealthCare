@@ -16,21 +16,22 @@ class Mobile extends CI_Controller {
 	function validate_credentials()
 	{
 		$this->load->model('Mobile_model');	
-		$email_id = $this->input->post('email_id');
+		//$email_id = $this->input->post('email_id');
 		//$imei = $this->input->post('imei');
-		$password = base64_encode($this->input->post('password'));
-		//$email_id = "vinod@gmail.com";
+		//$password = base64_encode($this->input->post('password'));
+		$email_id = "vinod@gmail.com";
 		$imei = 0;
-		//$password = base64_encode("9964546749");
+		$password = base64_encode("9964546749");
+		
+		$query = $this->Mobile_model->validate($email_id,$password,$imei);
+		if($query)
+		{
 		$todaysdate = date('Y-m-d');
 		$exp = $this->Mobile_model->validate_expiry($imei,$todaysdate);
 		if(!$exp){
 			$login_failed_data[] = array('loginFailed' => 'Your application service got expired');
 			print_r(json_encode($login_failed_data));
 		}else{
-		$query = $this->Mobile_model->validate($email_id,$password,$imei);
-		if($query)
-		{
 			$data['login'] = $this->Mobile_model->get_user_detail($email_id,$password);
 			$mobilogin = 1;
 			$userid = $data['login']['id'];
@@ -88,11 +89,11 @@ class Mobile extends CI_Controller {
 				);
 			print_r(json_encode($mobile_login_data));
 			}
-		else
+		
+		}else
 		{
 			$login_failed_data[] = array('loginFailed' => 'Invalid Credentials');
 			print_r(json_encode($login_failed_data));				
-		}
 		}
 		
 		
@@ -129,7 +130,7 @@ class Mobile extends CI_Controller {
 		
 		);
 		
-		$low_stock_data[] = array('product_search' => 'Medicine Search', 
+		$low_stock_data[] = array('nextMethod' => 'updateproduct', 
 								  'lowstock' => $low_stock,
 				);
 				
@@ -171,7 +172,7 @@ class Mobile extends CI_Controller {
 		
 		);
 		
-		$all_stock_data[] = array('product_search' => 'Medicine Search',
+		$all_stock_data[] = array('nextMethod' => 'updateproduct',
 								  'stockdetails' => $all_stock
 				);
 				
@@ -184,9 +185,6 @@ class Mobile extends CI_Controller {
 		}
 	}
 	
-	
-	
-	
 	public function getproductcode()
 	{
 	$userId = $this->input->post('userId');
@@ -196,7 +194,7 @@ class Mobile extends CI_Controller {
 	$prodcode = $data['auto_code']['series_id'].''.$data['auto_code']['user_id'].'-'.$data['auto_code']['continues_count'];
 					
 					
-	$product_data[] = array('addproduct' => 'New Medicine',
+	$product_data[] = array('nextMethod' => 'addproduct',
 								 'productcode' => $prodcode,
 								 'productcount' =>$data['auto_code']['continues_count']
 	);
@@ -267,6 +265,93 @@ class Mobile extends CI_Controller {
 	}
 	
 	
+	public function updateproduct()
+	{
+		$id = $this->input->post('product_id');
+	
+		$userId = $this->input->post('userId');
+		$entId = $this->input->post('entId');
+		$prodcode = $this->input->post('productcode');
+		$batchno = $this->input->post('productcode').'-'.(String)$this->input->post('expdate').'-'.(int)$this->input->post('mrp').'-'.(int)$this->input->post('purrate').'-'.(int)$this->input->post('salerate');
+		if($batchno === $this->input->post('batchno')){
+		$uom = $this->input->post('cbo_uom');
+		$prodqty = $this->input->post('productqty');
+		//print_r($uom);
+		if($uom === 'Boxes'){
+			//print_r($uom);
+			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs') + $this->input->post('curqty');
+		}elseif($uom === 'Strips'){
+			//print_r($uom);
+			$prodqty = $this->input->post('productqty') * $this->input->post('pcs') + $this->input->post('curqty');
+		}elseif($uom === 'Pcs'){
+			//print_r($uom);
+			$prodqty = $this->input->post('productqty') + $this->input->post('curqty');
+		}
+		$data =array
+			(
+				'status'=>'Active',
+				'user_id'=>$userId,
+				'product_code'=>$prodcode,
+				'product_name'=>$this->input->post('productname'), 
+				'product_qty'=>$prodqty,
+				'abtproduct'=>$this->input->post('abtproduct'),
+				'batchno'=>$batchno,
+				'mrp'=>$this->input->post('mrp'),
+				'purrate'=>$this->input->post('purrate'),
+				'salerate'=>$this->input->post('salerate'),
+				'packdate'=>$this->input->post('packdate'),
+				'expirydate'=>$this->input->post('expdate'),
+				'stripsinbox'=>$this->input->post('strips'),
+				'pcsinstrip'=>$this->input->post('pcs'),
+				'qtylimit'=>$this->input->post('qtylmt'),
+				'tax_percent'=>$this->input->post('taxper')
+				
+			);			
+		//print_r($data);
+			$this->Product_model->edit_record($data,$id);
+		}else{
+		$uom = $this->input->post('cbo_uom');
+		$prodqty = $this->input->post('productqty');
+		//print_r($uom);
+		if($uom === 'Boxes'){
+			//print_r($uom);
+			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs');
+		}elseif($uom === 'Strips'){
+			//print_r($uom);
+			$prodqty = $this->input->post('productqty') * $this->input->post('pcs');
+		}elseif($uom === 'Pcs'){
+			//print_r($uom);
+			$prodqty = $this->input->post('productqty');
+		}
+		$data =array
+			(
+				'status'=>'Active',
+				'user_id'=>$userId,
+				'product_code'=>$prodcode,
+				'product_name'=>$this->input->post('productname'), 
+				'product_qty'=>$prodqty,
+				'abtproduct'=>$this->input->post('abtproduct'),
+				'batchno'=>$batchno,
+				'mrp'=>$this->input->post('mrp'),
+				'purrate'=>$this->input->post('purrate'),
+				'salerate'=>$this->input->post('salerate'),
+				'packdate'=>$this->input->post('packdate'),
+				'expirydate'=>$this->input->post('expdate'),
+				'stripsinbox'=>$this->input->post('strips'),
+				'pcsinstrip'=>$this->input->post('pcs'),
+				'qtylimit'=>$this->input->post('qtylmt')
+				
+			);			
+		//print_r($data);
+			$this->Product_model->add_record($data);
+		}
+		
+			$product_updated[] = array('produpdated' => 'medicine updated successfully');
+				
+			print_r(json_encode($product_updated));
+
+	}
+	
 	public function getinvoicecode()
 	{
 	$userId = $this->input->post('userId');
@@ -276,9 +361,9 @@ class Mobile extends CI_Controller {
 	$invoicecode = $data['auto_code']['series_id'].''.$data['auto_code']['user_id'].'-'.$data['auto_code']['continues_count'];
 					
 					
-	$invoice_data[] = array('createinvoice' => 'Invoice',
-								 'invoicecode' => $invoicecode,
-								 'invoicecount' =>$data['auto_code']['continues_count']
+	$invoice_data[] = array('nextMethod' => 'createinvoice',
+							 'invoicecode' => $invoicecode,
+							 'invoicecount' =>$data['auto_code']['continues_count']
 	);
 			print_r(json_encode($invoice_data));
 	
@@ -378,53 +463,4 @@ class Mobile extends CI_Controller {
 		
 	}
 	
-	
-	
-	/*public function product_search()
-	{
-		$userid = $this->input->post('userId');
-		$product = $this->input->post('productName');
-		$feature = $this->input->post('featureName');
-		//$feature = 'stockdetails';
-		//$userid = '2';
-		//$product = 'Celin';
-		if($feature == 'stockdetails'){
-		$proddetails = $this->Mobile_model->auto_featch_all_stock($product, $userid);
-		}else if($feature == 'mypurchase'){
-		$proddetails = $this->Mobile_model->auto_featch_low_stock($product, $userid);
-		}
-		if(count($proddetails) >0){
-		foreach($proddetails as $row)
-		$stockinbox = (int)$row->product_qty /((int)$row->stripsinbox * (int)$row->pcsinstrip);
-		$stockinstrips = (int)$row->product_qty /(int)$row->pcsinstrip;
-		
-		$result_array[] = array('label' => $row->product_name,
-								'product_id' => $row->id,
-								'product_code' => $row->product_code,
-								'batchno' => $row->batchno,
-								'product_qty' => $row->product_qty,
-								'price' => $row->salerate,
-								'tax' => $row->tax_percent,
-								'stripsinbox' =>$row->stripsinbox,
-								'pcsinstrip' =>$row->pcsinstrip,
-								'stockinbox' =>(int)$stockinbox,
-								'stockinstrips' =>(int)$stockinstrips,
-								'createddatetime' => $row->createddatetime,
-								'status' => $row->status,
-								'user_id' => $row->user_id,
-								'qtylimit' => $row->qtylimit,
-								'packdate' => $row->packdate,
-								'expirydate' => $row->expirydate,
-								'mrp' => $row->mrp,
-								'salerate' => $row->salerate,
-								'purrate' => $row->purrate,
-								'abtproduct' => $row->abtproduct,
-								'batchno' => $row->batchno,
-		);
-		
-		echo json_encode($result_array);
-		}
-					
-		
-	}*/
 }
