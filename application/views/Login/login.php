@@ -33,7 +33,7 @@
           </div>
            
 		  <button type="submit" class="btn btn-primary btn-block" style="font-weight:bolder;">Login</button>
-		  <div class="text-right" >
+		  <div class="text-right" style="display:none" >
          <a class="d-block small mt-3" style="visibility: hidden" href="<?php echo base_url()?>Login/forgot_password">Forgot Password?</a>
           <a class="d-block small" style="visibility: hidden" href="<?php echo base_url()?>Login/registration">Register an Account</a>
         </div>

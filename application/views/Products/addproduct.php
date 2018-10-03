@@ -18,6 +18,15 @@
               <!-- /.box-header -->
               <div class="box-body">
                 <div class="form-group col-md-12">
+					<label for="uom">Product Type </label></br>
+					<div class="form-group col-md-6">	   
+					<label><input type="radio" name="producttype" id="producttypeTablet" value="Tablet" checked=""> Tablet</label>
+					</div>	
+					<div class="form-group col-md-6">	   
+					<label><input type="radio" name="producttype" id="producttypeLiquid" value="Liquid"> Liquid</label>
+					</div>					
+				  </div>
+				<div class="form-group col-md-12">
                   <label for="productcode">
                   Product Code
                   <label style="color:#FF0000"> *</label>
@@ -37,7 +46,7 @@
 				 
                 <div class="form-group col-sm-12">
                   <label for="abtproduct">About Product </label>
-                  <textarea class="form-control" rows="8" id="abtproduct" name="abtproduct" cols="10" placeholder="Enter About Product"
+                  <textarea class="form-control" rows="2" id="abtproduct" name="abtproduct" cols="10" placeholder="Enter About Product"
 				style="width: 100%; font-size: 12px; line-height: 12px; border: 1px solid #dddddd; padding: 10px;"><?php echo set_value('abtproduct')?></textarea>
                 </div>
 				 <div class="form-group col-md-12">
@@ -68,7 +77,7 @@
               <div class="box-body">
                 <div class="form-group col-md-12">
                   <label for="mrp">
-                  MRP [In Pcs.]
+                  MRP [For Pc.]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="mrp" name="mrp" type="text" placeholder="MRP"
@@ -76,7 +85,7 @@
                   <?php echo form_error('mrp','<div style="color:#FF0000;">','</div>'); ?> </div>
                 <div class="form-group col-md-12">
                   <label for="purrate">
-                  Purchase Rate [In Pcs.]
+                  Purchase Rate [For Pc.]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="purrate" name="purrate" type="text" placeholder="Purchase Rate"
@@ -84,7 +93,7 @@
                   <?php echo form_error('purrate','<div style="color:#FF0000;">','</div>'); ?> </div>
                 <div class="form-group col-md-12">
                   <label for="salerate">
-                  Sale Rate [In Pc.]
+                  Sale Rate [For Pc.]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="salerate" name="salerate" type="text" placeholder="Sale Rate"
@@ -115,7 +124,8 @@
                 <h3 class="box-title"><i class="fa fa-crosshairs" style="font-size:16px;color:#3c8dbc"></i> UOM Details</h3>
               </div>
               <div class="box-body">
-               	<div class="form-group col-md-12">
+				
+			   <div id="stripsinbox" class="form-group col-md-12">
                   <label for="batch">
                   Strips in Box.
                   <label style="color:#FF0000"> *</label>
@@ -124,12 +134,31 @@
 				 value="<?php echo set_value('strips')?>" onKeyUp="isnum(this)">
 				 <?php echo form_error('strips','<div style="color:#FF0000;">','</div>'); ?>
                 </div>
-				<div class="form-group col-md-12">
+				<div id="bottlesinbox" class="form-group col-md-12" style="display:none">
+                  <label for="batch">
+                  Bottles in Box.
+                  <label style="color:#FF0000"> *</label>
+                  </label>
+                  <input class="form-control" id="strips" name="strips" type="text" placeholder="Bottles in Box" 
+				 value="<?php echo set_value('strips')?>" onKeyUp="isnum(this)">
+				 <?php echo form_error('strips','<div style="color:#FF0000;">','</div>'); ?>
+                </div>
+				
+				<div id="pcsinstrip" class="form-group col-md-12">
                   <label for="batch">
                   Pcs in Strip.
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="pcs" name="pcs" type="text" placeholder="Pcs in Strip" 
+				 value="<?php echo set_value('pcs')?>" onKeyUp="isnum(this)">
+				 <?php echo form_error('pcs','<div style="color:#FF0000;">','</div>'); ?>
+                </div>
+				<div id="mlinbottle" class="form-group col-md-12" style="display:none">
+                  <label for="batch">
+                  ml in Bottle.
+                  <label style="color:#FF0000"> *</label>
+                  </label>
+                  <input class="form-control" id="pcs" name="pcs" type="text" placeholder="ml in Strip" 
 				 value="<?php echo set_value('pcs')?>" onKeyUp="isnum(this)">
 				 <?php echo form_error('pcs','<div style="color:#FF0000;">','</div>'); ?>
                 </div>

@@ -268,24 +268,25 @@ class Mobile extends CI_Controller {
 	public function updateproduct()
 	{
 		$id = $this->input->post('product_id');
-	
 		$userId = $this->input->post('userId');
 		$entId = $this->input->post('entId');
 		$prodcode = $this->input->post('productcode');
 		$batchno = $this->input->post('productcode').'-'.(String)$this->input->post('expdate').'-'.(int)$this->input->post('mrp').'-'.(int)$this->input->post('purrate').'-'.(int)$this->input->post('salerate');
-		if($batchno === $this->input->post('batchno')){
 		$uom = $this->input->post('cbo_uom');
 		$prodqty = $this->input->post('productqty');
+		$product_qty = $this->input->post('curqty');
+		if($batchno === $this->input->post('batchno')){
+		
 		//print_r($uom);
 		if($uom === 'Boxes'){
 			//print_r($uom);
-			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs') + $this->input->post('curqty');
+			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs') + $product_qty;
 		}elseif($uom === 'Strips'){
 			//print_r($uom);
-			$prodqty = $this->input->post('productqty') * $this->input->post('pcs') + $this->input->post('curqty');
+			$prodqty = $this->input->post('productqty') * $this->input->post('pcs') + $product_qty;
 		}elseif($uom === 'Pcs'){
 			//print_r($uom);
-			$prodqty = $this->input->post('productqty') + $this->input->post('curqty');
+			$prodqty = $this->input->post('productqty') + $product_qty;
 		}
 		$data =array
 			(
@@ -310,8 +311,6 @@ class Mobile extends CI_Controller {
 		//print_r($data);
 			$this->Product_model->edit_record($data,$id);
 		}else{
-		$uom = $this->input->post('cbo_uom');
-		$prodqty = $this->input->post('productqty');
 		//print_r($uom);
 		if($uom === 'Boxes'){
 			//print_r($uom);
@@ -346,7 +345,7 @@ class Mobile extends CI_Controller {
 			$this->Product_model->add_record($data);
 		}
 		
-			$product_updated[] = array('produpdated' => 'medicine updated successfully');
+			$product_updated[] = array('prodAdded' => 'medicine updated successfully');
 				
 			print_r(json_encode($product_updated));
 
