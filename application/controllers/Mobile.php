@@ -16,12 +16,12 @@ class Mobile extends CI_Controller {
 	function validate_credentials()
 	{
 		$this->load->model('Mobile_model');	
-		//$email_id = $this->input->post('email_id');
+		$email_id = $this->input->post('email_id');
 		//$imei = $this->input->post('imei');
-		//$password = base64_encode($this->input->post('password'));
-		$email_id = "vinod@gmail.com";
+		$password = base64_encode($this->input->post('password'));
+		//$email_id = "vinod@gmail.com";
 		$imei = 0;
-		$password = base64_encode("9964546749");
+		//$password = base64_encode("9964546749");
 		
 		$query = $this->Mobile_model->validate($email_id,$password,$imei);
 		if($query)
@@ -48,6 +48,7 @@ class Mobile extends CI_Controller {
 			$instockcount = (int)$totalstockcount - (int)$lowstockcount;
 			
 			$patientcount = $this->Invoice_model->patient_count($data['login']['id']);
+			$invoicecount = $this->Invoice_model->patient_count($data['login']['id']);
 			$totalamount = $this->Invoice_model->total_amount($data['login']['id']);
 			$datestring = date('Y-m-d');
 			$todayamount = $this->Invoice_model->todays_total_amount($data['login']['id'],$datestring);
@@ -67,8 +68,9 @@ class Mobile extends CI_Controller {
 									'inStockCount' => $instockcount,
 									'pendingAppointments' => 3,
 									'totalPatients'=> $patientcount,
-									'totalAmount'=> $totalamount,
-									'todayAmount'=> $todayamount,
+									'totalinvoices'=> $invoicecount,
+									'totalAmount'=> $totalamount['amount'],
+									'todayAmount'=> $todayamount['amount'],
 									
 									
 			);
