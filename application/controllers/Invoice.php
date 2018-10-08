@@ -257,10 +257,11 @@ class Invoice extends CI_Controller {
 		$data['proddetails'] = $this->Product_model->get_record_by_batch($batch);
 		
 		$this->Invoice_model->delete_record($id);
+		
 		if($uom === 'Boxs'){
 			$upqty = (int)$data['tempproddetails']['product_qty'] * (int)$data['proddetails']['stripsinbox'] * (int)$data['proddetails']['pcsinstrip'];
 			$stock = (int)$data['proddetails']['product_qty'] + (int)$upqty;
-			print_r($stock);
+			//print_r($stock);
 			$data = array(
 				'product_qty'=>$stock,
 			);
@@ -269,23 +270,20 @@ class Invoice extends CI_Controller {
 			$upqty = (int)$data['tempproddetails']['product_qty'] *  (int)$data['proddetails']['pcsinstrip'];
 			$stock = (int)$data['proddetails']['product_qty'] + (int)$upqty;
 			
-			print_r($stock);
+			//print_r($stock);
 			$data = array(
 				'product_qty'=>$stock,
 			);
 			}else if($uom === 'Pcs'){
 			$upqty = (int)$data['tempproddetails']['product_qty'];
 			$stock = (int)$data['proddetails']['product_qty'] + (int)$upqty;
-			print_r($stock);
+			//print_r($stock);
 			$data = array(
 				'product_qty'=>$stock,
 			);
 			}
 			
 			$this->Product_model->update_stock($data,$batch);
-		
-		
-		
 		
 		
 		redirect(base_url().'Invoice/createinvoice');  

@@ -134,4 +134,17 @@ class Mobile_model extends CI_Model
 	
 	return $query->row_array();
     }
+	
+	public function view_invoice_details($order_by = '',$userId)
+    {
+    $this->db->select('h.*,r.first_name,r.last_name');
+    $this->db->from('tab_invoice_h as h');
+	$this->db->where('user_id', $userId);
+	$this->db->join('tab_registration as r', 'r.id = h.user_id', 'left');
+    if($order_by != ''){
+    $this->db->order_by('h.id',$order_by);
+    }
+    $query = $this->db->get();		
+    return $query->result_array();
+    }
  }

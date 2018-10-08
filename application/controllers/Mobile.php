@@ -16,12 +16,12 @@ class Mobile extends CI_Controller {
 	function validate_credentials()
 	{
 		$this->load->model('Mobile_model');	
-		$email_id = $this->input->post('email_id');
+		//$email_id = $this->input->post('email_id');
 		//$imei = $this->input->post('imei');
-		$password = base64_encode($this->input->post('password'));
-		//$email_id = "vinod@gmail.com";
+		//$password = base64_encode($this->input->post('password'));
+		$email_id = "vinod@gmail.com";
 		$imei = 0;
-		//$password = base64_encode("9964546749");
+		$password = base64_encode("9964546749");
 		
 		$query = $this->Mobile_model->validate($email_id,$password,$imei);
 		if($query)
@@ -78,7 +78,8 @@ class Mobile extends CI_Controller {
 			$menu_array[] = array(
 								  'mypurchase' => "Order",
 								  'stockDetails' => "Stock",
-								  'getproductcode' => "Add Medicine",
+								  'getproductcode' => "New Med",
+								  'invoiceList' => "Invoice",
 								  'getinvoicecode' => "Invoice",
 								  'mobiLogout' => "Logout"
 			);
@@ -136,12 +137,12 @@ class Mobile extends CI_Controller {
 								  'lowstock' => $low_stock,
 				);
 				
-		echo json_encode($low_stock_data);
+		print_r(json_encode($low_stock_data));
 		}else{
 		$no_low_stock_data[] = array('noItems' => 'No Items Found.'
 				);
 				
-		echo json_encode($no_low_stock_data);
+		print_r(json_encode($no_low_stock_data));
 		}
 	}
 	
@@ -178,12 +179,12 @@ class Mobile extends CI_Controller {
 								  'stockdetails' => $all_stock
 				);
 				
-		echo json_encode($all_stock_data);
+		print_r(json_encode($all_stock_data));
 		}else{
 		$no_stock_data[] = array('noItems' => 'No Items Found.'
 				);
 				
-		echo json_encode($no_stock_data);
+		print_r(json_encode($no_stock_data));
 		}
 	}
 	
@@ -270,25 +271,24 @@ class Mobile extends CI_Controller {
 	public function updateproduct()
 	{
 		$id = $this->input->post('product_id');
+	
 		$userId = $this->input->post('userId');
 		$entId = $this->input->post('entId');
 		$prodcode = $this->input->post('productcode');
 		$batchno = $this->input->post('productcode').'-'.(String)$this->input->post('expdate').'-'.(int)$this->input->post('mrp').'-'.(int)$this->input->post('purrate').'-'.(int)$this->input->post('salerate');
+		if($batchno === $this->input->post('batchno')){
 		$uom = $this->input->post('cbo_uom');
 		$prodqty = $this->input->post('productqty');
-		$product_qty = $this->input->post('curqty');
-		if($batchno === $this->input->post('batchno')){
-		
 		//print_r($uom);
 		if($uom === 'Boxes'){
 			//print_r($uom);
-			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs') + $product_qty;
+			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs') + $this->input->post('curqty');
 		}elseif($uom === 'Strips'){
 			//print_r($uom);
-			$prodqty = $this->input->post('productqty') * $this->input->post('pcs') + $product_qty;
+			$prodqty = $this->input->post('productqty') * $this->input->post('pcs') + $this->input->post('curqty');
 		}elseif($uom === 'Pcs'){
 			//print_r($uom);
-			$prodqty = $this->input->post('productqty') + $product_qty;
+			$prodqty = $this->input->post('productqty') + $this->input->post('curqty');
 		}
 		$data =array
 			(
@@ -313,6 +313,8 @@ class Mobile extends CI_Controller {
 		//print_r($data);
 			$this->Product_model->edit_record($data,$id);
 		}else{
+		$uom = $this->input->post('cbo_uom');
+		$prodqty = $this->input->post('productqty');
 		//print_r($uom);
 		if($uom === 'Boxes'){
 			//print_r($uom);
@@ -347,7 +349,7 @@ class Mobile extends CI_Controller {
 			$this->Product_model->add_record($data);
 		}
 		
-			$product_updated[] = array('prodAdded' => 'medicine updated successfully');
+			$product_updated[] = array('produpdated' => 'medicine updated successfully');
 				
 			print_r(json_encode($product_updated));
 
@@ -367,6 +369,51 @@ class Mobile extends CI_Controller {
 							 'invoicecount' =>$data['auto_code']['continues_count']
 	);
 			print_r(json_encode($invoice_data));
+	
+	}
+	
+	public function invoiceList()
+	{
+	$userId = $this->input->post('userId');
+	$invoice = $this->Mobile_model->view_invoice_details('DESC',$userId=2);
+	
+	/*echo "<pre>";
+	print_r($invoice);
+	echo "</pre>";*/
+					
+	if(count($invoice) >0){
+		foreach($invoice as $row)
+		$all_invoice[] = array('invoice_id' =>$row['id'],
+								'fees' =>$row['fees'],
+								'invoice_no' =>$row['invoice_no'],
+								'patient_name' =>$row['patient_name'],
+								'patient_gender' =>$row['patient_gender'],
+								'patient_phoneno' =>$row['patient_phoneno'],
+								'patient_address' =>$row['patient_address'],
+								'user_id' =>$row['user_id'],
+								'created_datetime' =>$row['created_datetime'],
+								'invoice_amt' =>$row['invoice_amt'],
+								'total_tax_amt' =>$row['total_tax_amt'],
+								'total_gross_amt' =>$row['total_gross_amt'],
+								'created_date' =>$row['created_date'],
+								'first_name' =>$row['first_name'],
+								'last_name' =>$row['last_name']
+								
+		
+		);
+		
+		$all_invoice_data[] = array('nextMethod' => 'getinvoicecode',
+								  'invoicedetails' => $all_invoice
+				);
+				
+		print_r(json_encode($all_invoice_data));
+		}else{
+		$no_invoice_data[] = array('noItems' => 'No Items Found.'
+				);
+				
+		print_r(json_encode($no_invoice_data));
+		}		
+	
 	
 	}
 	
