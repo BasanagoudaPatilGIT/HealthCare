@@ -26,22 +26,28 @@ class Product extends CI_Controller {
 		$data['auto_code'] = $this->Product_model->get_productcode($_SESSION['ID']);
 		$prodcount = (int)$data['auto_code']['continues_count'];
 		// Field Validation
+		$prodtype = $this->input->post('producttype');
+		$this->form_validation->set_rules('productname','Product Name','required');
 		$this->form_validation->set_rules('productname','Product Name','required');
 		$this->form_validation->set_rules('productqty','Product Qty','required|numeric');
-		$this->form_validation->set_rules('mrp','MRP','required|decimal');
-		$this->form_validation->set_rules('purrate','Purchase Rate','required|decimal');
-		$this->form_validation->set_rules('salerate','Sale Rate','required|decimal');
+		$this->form_validation->set_rules('mrp','MRP','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('purrate','Purchase Rate','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('salerate','Sale Rate','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('packdate','Pack Date','required');
 		$this->form_validation->set_rules('expdate','Expiry Date','required');
-		$this->form_validation->set_rules('cbo_uom','Product UOM','required');
-		$this->form_validation->set_rules('strips','Strips in Boxs.','required|numeric|is_natural_no_zero');
-		$this->form_validation->set_rules('pcs','Pcs in Stript.','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('cbo_uom_bot','Product UOM','required');
 		$this->form_validation->set_rules('qtylmt','Quantity Limit','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('taxper','Tax Percent','required|decimal');
 		
-
-
-
+		if($prodtype === "Tablet"){
+		$this->form_validation->set_rules('strips','Strips in Boxs.','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('pcs','Pcs in Stript.','required|numeric|is_natural_no_zero');
+		}else if($prodtype === "Liquid"){
+		$this->form_validation->set_rules('botinbox','Bottles in Boxs.','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('mlinbot','Ml in Bottle.','required|numeric|is_natural_no_zero');
+		}
+		
+		
 		if(($this->form_validation->run())==false)
 		{
 		$data['title'] = "HealthCare - Add New Product";
@@ -52,9 +58,10 @@ class Product extends CI_Controller {
 		}
 		else
 		{
+		if($prodtype === "Tablet"){
 		$uom = $this->input->post('cbo_uom');
 		$prodqty = $this->input->post('productqty');
-		print_r($uom);
+		//print_r($uom);
 		if($uom === 'Boxes'){
 			//print_r($uom);
 			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs');
@@ -87,10 +94,12 @@ class Product extends CI_Controller {
 				'stripsinbox'=>$this->input->post('strips'),
 				'pcsinstrip'=>$this->input->post('pcs'),
 				'qtylimit'=>$this->input->post('qtylmt'),
-				'tax_percent'=>$this->input->post('taxper')
+				'tax_percent'=>$this->input->post('taxper'),
+				'product_type'=>$prodtype
 				
 			);	
-			$this->Product_model->add_record($data);			
+			$this->Product_model->add_record($data);
+			
 			$data =array
 			(
 				'last_updated'=>mdate($datestring),
@@ -108,8 +117,65 @@ class Product extends CI_Controller {
 				  ');
 			
 			redirect(base_url().'Product/productlist'); 
-
+		}else if($prodtype === "Liquid"){
+		$uom = $this->input->post('cbo_uom_bot');
+		$prodqty = $this->input->post('productqty');
+		if($uom === 'Boxes'){
+			$prodqty = $this->input->post('productqty') * $this->input->post('botinbox') * $this->input->post('mlinbot');
+		}elseif($uom === 'Bottles'){
+			$prodqty = $this->input->post('productqty') * $this->input->post('mlinbot');
 		}
+		$qtylmt =  $this->input->post('qtylmt') * $this->input->post('mlinbot');
+		$batchno = $this->input->post('productcode').'-'.(String)$this->input->post('expdate').'-'.(int)$this->input->post('mrp').'-'.(int)$this->input->post('purrate').'-'.(int)$this->input->post('salerate');
+		
+		
+		$datestring = date('Y-m-d');
+		$data =array
+			(
+				'status'=>'Active',
+				'user_id'=>$_SESSION['ID'],
+				'product_code'=>$this->input->post('productcode'),
+				'product_name'=>$this->input->post('productname'),
+				'product_qty'=>$prodqty,
+				'abtproduct'=>$this->input->post('abtproduct'),
+				'batchno'=>$batchno,
+				'mrp'=>$this->input->post('mrp') / $this->input->post('mlinbot'),
+				'purrate'=>$this->input->post('purrate') / $this->input->post('mlinbot'),
+				'salerate'=>$this->input->post('salerate') / $this->input->post('mlinbot'),
+				'packdate'=>$this->input->post('packdate'),
+				'expirydate'=>$this->input->post('expdate'),
+				'bottlesinbox'=>$this->input->post('botinbox'),
+				'mlinbottle'=>$this->input->post('mlinbot'),
+				'qtylimit'=>$qtylmt,
+				'tax_percent'=>$this->input->post('taxper'),
+				'product_type'=>$prodtype
+				
+			);	
+			$this->Product_model->add_record($data);
+
+			
+			$data =array
+			(
+				'last_updated'=>mdate($datestring),
+				'continues_count'=> (int)$prodcount + 1
+			);
+		
+			
+			$this->Product_model->incriment_productcode_no($data,$_SESSION['ENT_ID']);
+			
+			$this->session->set_flashdata('msg','<div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                    
+                    <i class="icon fa fa-check"></i> Record Added Successfully.
+                  </div>
+				  ');
+			
+			redirect(base_url().'Product/productlist'); 
+		
+		}
+		}
+			
+		
 	}
 	
 	public function updateproduct()
@@ -127,17 +193,23 @@ class Product extends CI_Controller {
 		$this->form_validation->set_rules('productcode','Product Code','required');
 		$this->form_validation->set_rules('productname','Product Name','required');
 		$this->form_validation->set_rules('productqty','Product Qty','required|numeric');
-		$this->form_validation->set_rules('mrp','MRP','required|decimal');
-		$this->form_validation->set_rules('purrate','Purchase Rate','required|decimal');
-		$this->form_validation->set_rules('salerate','Sale Rate','required|decimal');
+		$this->form_validation->set_rules('mrp','MRP','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('purrate','Purchase Rate','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('salerate','Sale Rate','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('packdate','Pack Date','required');
 		$this->form_validation->set_rules('expdate','Expiry Date','required');
 		$this->form_validation->set_rules('cbo_uom','Product UOM','required');
-		$this->form_validation->set_rules('strips','Strips in Boxs.','required|numeric|is_natural_no_zero');
-		$this->form_validation->set_rules('pcs','Pcs in Stript.','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('qtylmt','Quantity Limit','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('taxper','Tax Percent','required|decimal');
 		
+		$prodtype = $data['product_row']['product_type'];
+		if($prodtype === "Tablet"){
+		$this->form_validation->set_rules('strips','Strips in Boxs.','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('pcs','Pcs in Stript.','required|numeric|is_natural_no_zero');
+		}else if($prodtype === "Liquid"){
+		$this->form_validation->set_rules('botinbox','Bottles in Boxs.','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('mlinbot','Ml in Bottle.','required|numeric|is_natural_no_zero');
+		}
 		
 		if(($this->form_validation->run())==false)
 		{
@@ -149,11 +221,14 @@ class Product extends CI_Controller {
 		}
 		else
 		{
+		
+		if($prodtype === "Tablet"){
 		$batchno = $this->input->post('productcode').'-'.(String)$this->input->post('expdate').'-'.(int)$this->input->post('mrp').'-'.(int)$this->input->post('purrate').'-'.(int)$this->input->post('salerate');
+		
 		if($batchno === $data['product_row']['batchno'] && $this->input->post('packdate') === $data['product_row']['packdate'] && $this->input->post('expdate') === $data['product_row']['expirydate']){
-			$uom = $this->input->post('cbo_uom');
+		$uom = $this->input->post('cbo_uom');
 		$prodqty = $this->input->post('productqty');
-		print_r($uom);
+		//print_r($uom);
 		if($uom === 'Boxes'){
 			//print_r($uom);
 			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs') + $this->input->post('curqty');
@@ -227,12 +302,109 @@ class Product extends CI_Controller {
 			$this->session->set_flashdata('msg','<div class="alert alert-success alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
                     
-                    <i class="icon fa fa-check"></i> Record Added Successfully.
+                    <i class="icon fa fa-check"></i> Record Added/Updated Successfully.
                   </div>
 				  ');
 			
 			redirect(base_url().'Product/productlist'); 
 
+		}else if($prodtype === "Liquid"){
+		
+		$batchno = $this->input->post('productcode').'-'.(String)$this->input->post('expdate').'-'.(int)$this->input->post('mrp').'-'.(int)$this->input->post('purrate').'-'.(int)$this->input->post('salerate');
+		
+		if($batchno === $data['product_row']['batchno'] && $this->input->post('packdate') === $data['product_row']['packdate'] && $this->input->post('expdate') === $data['product_row']['expirydate']){
+		$uom = $this->input->post('cbo_uom_bot');
+		$prodqty = $this->input->post('productqty');
+		//print_r($uom);
+		if($uom === 'Boxes'){
+			//print_r($uom);
+			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs') + $this->input->post('curqty');
+		}elseif($uom === 'Strips'){
+			//print_r($uom);
+			$prodqty = $this->input->post('productqty') * $this->input->post('pcs') + $this->input->post('curqty');
+		}
+		
+		
+		if($uom === 'Boxes'){
+			$prodqty = $this->input->post('productqty') * $this->input->post('botinbox') * $this->input->post('mlinbot');
+		}elseif($uom === 'Bottles'){
+			$prodqty = $this->input->post('productqty') * $this->input->post('mlinbot');
+		}
+		
+		$data =array
+			(
+				'status'=>'Active',
+				'user_id'=>$_SESSION['ID'],
+				'product_code'=>$this->input->post('productcode'),
+				'product_name'=>$this->input->post('productname'), 
+				'product_qty'=>$prodqty,
+				'abtproduct'=>$this->input->post('abtproduct'),
+				'batchno'=>$batchno,
+				'mrp'=>$this->input->post('mrp'),
+				'purrate'=>$this->input->post('purrate'),
+				'salerate'=>$this->input->post('salerate'),
+				'packdate'=>$this->input->post('packdate'),
+				'expirydate'=>$this->input->post('expdate'),
+				'stripsinbox'=>$this->input->post('strips'),
+				'pcsinstrip'=>$this->input->post('pcs'),
+				'qtylimit'=>$this->input->post('qtylmt'),
+				'tax_percent'=>$this->input->post('taxper')
+				
+			);			
+		//print_r($data);
+			$this->Product_model->edit_record($data,$id);
+		}else{
+		$uom = $this->input->post('cbo_uom');
+		$prodqty = $this->input->post('productqty');
+		print_r($uom);
+		if($uom === 'Boxes'){
+			//print_r($uom);
+			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs');
+		}elseif($uom === 'Strips'){
+			//print_r($uom);
+			$prodqty = $this->input->post('productqty') * $this->input->post('pcs');
+		}elseif($uom === 'Pcs'){
+			//print_r($uom);
+			$prodqty = $this->input->post('productqty');
+		}
+		$data =array
+			(
+				'status'=>'Active',
+				'user_id'=>$_SESSION['ID'],
+				'product_code'=>$this->input->post('productcode'),
+				'product_name'=>$this->input->post('productname'), 
+				'product_qty'=>$prodqty,
+				'abtproduct'=>$this->input->post('abtproduct'),
+				'batchno'=>$batchno,
+				'mrp'=>$this->input->post('mrp'),
+				'purrate'=>$this->input->post('purrate'),
+				'salerate'=>$this->input->post('salerate'),
+				'packdate'=>$this->input->post('packdate'),
+				'expirydate'=>$this->input->post('expdate'),
+				'stripsinbox'=>$this->input->post('strips'),
+				'pcsinstrip'=>$this->input->post('pcs'),
+				'qtylimit'=>$this->input->post('qtylmt')
+				
+			);			
+		//print_r($data);
+			$this->Product_model->add_record($data);
+		}
+		
+			
+			$this->session->set_flashdata('msg','<div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                    
+                    <i class="icon fa fa-check"></i> Record Added/Updated Successfully.
+                  </div>
+				  ');
+			
+			redirect(base_url().'Product/productlist');
+			
+			
+			
+		}
+		
+		
 		}
 	}
 	

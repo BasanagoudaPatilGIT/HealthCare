@@ -34,14 +34,26 @@
 				 value="<?php echo $product_row['product_name'] ?>" onKeyUp="isalphanum(this)">
                   <?php echo form_error('productname','<div style="color:#FF0000;">','</div>'); ?> 
 				  </div>
+				  <?php if($product_row['product_type'] == "Tablet") {?>
 				  <div class="form-group col-md-12">
                   <label for="curqty">
-                  Available Stock
+                  Available Stock[In Pcs]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="curqty" name="curqty" type="text" readonly="" placeholder="Current Qty"  
 				 value="<?php echo $product_row['product_qty'] ?>">
                 </div>
+				 <?php }else if($product_row['product_type'] == "Liquid") {?>
+				<div class="form-group col-md-12">
+                  <label for="curqty">
+                  Available Stock[In Bottles]
+                  <label style="color:#FF0000"> *</label>
+                  </label>
+                  <input class="form-control" id="curqty" name="curqty" type="text" readonly="" placeholder="Current Qty"  
+				 value="<?php echo $product_row['product_qty'] / $product_row['mlinbottle']  ?>">
+                </div>
+				  <?php }?>
+				
 				 <div class="form-group col-md-12">
                   <label for="batch">
                   Batch No.
@@ -75,9 +87,10 @@
                 <h3 class="box-title"><i class="fa fa-money" style="font-size:16px;color:#3c8dbc"></i> Amount Details</h3>
               </div>
               <div class="box-body">
+				<?php if($product_row['product_type'] == "Tablet") {?>
                 <div class="form-group col-md-12">
                   <label for="mrp">
-                  MRP [In Boxs.]
+                  MRP [For Pc/Bottle.]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="mrp" name="mrp" type="text" placeholder="MRP"
@@ -85,7 +98,7 @@
                   <?php echo form_error('mrp','<div style="color:#FF0000;">','</div>'); ?> </div>
                 <div class="form-group col-md-12">
                   <label for="purrate">
-                  Purchase Rate [In Boxs.]
+                  Purchase Rate [For Pc/Bottle.]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="purrate" name="purrate" type="text" placeholder="Purchase rate"
@@ -93,12 +106,42 @@
                   <?php echo form_error('purrate','<div style="color:#FF0000;">','</div>'); ?> </div>
                 <div class="form-group col-md-12">
                   <label for="salerate">
-                  Sale Rate [In Boxs.]
+                  Sale Rate [For Pc/Bottle.]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="salerate" name="salerate" type="text" placeholder="Sale rate"
 				 value="<?php echo $product_row['salerate'] ?>" onKeyUp="isalphanum(this)">
                   <?php echo form_error('salerate','<div style="color:#FF0000;">','</div>'); ?> </div>
+				  
+				  <?php }else if($product_row['product_type'] == "Liquid") {?>
+				  
+				   <div class="form-group col-md-12">
+                  <label for="mrp">
+                  MRP [For Pc/Bottle.]
+                  <label style="color:#FF0000"> *</label>
+                  </label>
+                  <input class="form-control" id="mrp" name="mrp" type="text" placeholder="MRP"
+				 value="<?php echo $product_row['mrp'] * $product_row['mlinbottle'] ?>" onKeyUp="isalphanum(this)">
+                  <?php echo form_error('mrp','<div style="color:#FF0000;">','</div>'); ?> </div>
+                <div class="form-group col-md-12">
+                  <label for="purrate">
+                  Purchase Rate [For Pc/Bottle.]
+                  <label style="color:#FF0000"> *</label>
+                  </label>
+                  <input class="form-control" id="purrate" name="purrate" type="text" placeholder="Purchase rate"
+				 value="<?php echo $product_row['purrate']  * $product_row['mlinbottle']  ?>" onKeyUp="isalphanum(this)">
+                  <?php echo form_error('purrate','<div style="color:#FF0000;">','</div>'); ?> </div>
+                <div class="form-group col-md-12">
+                  <label for="salerate">
+                  Sale Rate [For Pc/Bottle.]
+                  <label style="color:#FF0000"> *</label>
+                  </label>
+                  <input class="form-control" id="salerate" name="salerate" type="text" placeholder="Sale rate"
+				 value="<?php echo $product_row['salerate']  * $product_row['mlinbottle']  ?>" onKeyUp="isalphanum(this)">
+                  <?php echo form_error('salerate','<div style="color:#FF0000;">','</div>'); ?> </div>
+				  
+				  <?php }?>
+				  
                 <div class="form-group col-md-12">
                   <label for="packdate">
                   Pack Date
@@ -124,6 +167,7 @@
                 <h3 class="box-title"><i class="fa fa-crosshairs" style="font-size:16px;color:#3c8dbc"></i> UOM Details</h3>
               </div>
               <div class="box-body">
+			  <?php if($product_row['product_type'] == "Tablet") {?>
                	<div class="form-group col-md-12">
                   <label for="batch">
                   Strips in box.
@@ -144,7 +188,7 @@
                 </div>
 				<div class="form-group col-md-12">
                   <label for="qtylmt">
-                  Quantity Limit
+                  Quantity Limit[In Pcs]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="qtylmt" name="qtylmt" type="text" placeholder="Quantity Limit"
@@ -156,7 +200,7 @@
 					<?php
 							$cbo_uom = 
 							 array(   
-										'' => '- Select - ',
+										'' => '- Select -',
 										'Boxes' => 'Boxes',
 										'Strips' =>'Strips',
 										'Pcs' =>'Pcs'
@@ -168,6 +212,51 @@
 					<?php echo form_error('cbo_uom','<div style="color:#FF0000;">','</div>'); ?>		   
 							 
 				  </div>
+				<?php }else if($product_row['product_type'] == "Liquid") {?>
+				 <div class="form-group col-md-12">
+                  <label for="batch">
+                  Bottles in Box.
+                  <label style="color:#FF0000"> *</label>
+                  </label>
+                  <input class="form-control" id="botinbox" name="botinbox" type="text" placeholder="Bottles in Box" 
+				 value="<?php echo $product_row['bottlesinbox']?>" onKeyUp="isnum(this)">
+				 <?php echo form_error('botinbox','<div style="color:#FF0000;">','</div>'); ?>
+                </div>
+				<div class="form-group col-md-12">
+                  <label for="batch">
+                  ml in Bottle.
+                  <label style="color:#FF0000"> *</label>
+                  </label>
+                  <input class="form-control" id="pcs" name="mlinbot" type="mlinbot" placeholder="ml in Bottle" 
+				 value="<?php echo $product_row['mlinbottle']?>" onKeyUp="isnum(this)">
+				 <?php echo form_error('mlinbot','<div style="color:#FF0000;">','</div>'); ?>
+                </div>
+				<div class="form-group col-md-12">
+                  <label for="qtylmt">
+                  Quantity Limit[In Bottles]
+                  <label style="color:#FF0000"> *</label>
+                  </label>
+                  <input class="form-control" id="qtylmt" name="qtylmt" type="text" placeholder="Quantity Limit"
+					 value="<?php echo $product_row['qtylimit'] / $product_row['mlinbottle'] ?>" onKeyUp="isnum(this)">
+                  <?php echo form_error('productqty','<div style="color:#FF0000;">','</div>'); ?> 
+				  </div>
+				<div class="form-group col-md-12">
+					<label for="uom">Product UOM </label> <label style="color:#FF0000"> *</label>
+					<?php
+							$cbo_uom_bot = 
+							 array(   
+										'' => '- Select - ',
+										'Boxes' => 'Boxes',
+										'Bottles' =>'Bottles'
+									  
+									);
+							$attributes = 'class = "form-control" id = "cbo_uom_bot"';
+							echo form_dropdown('cbo_uom_bot',$cbo_uom_bot,set_value('cbo_uom_bot'), $attributes);
+					?>
+					<?php echo form_error('cbo_uom_bot','<div style="color:#FF0000;">','</div>'); ?>		   
+							 
+				  </div>
+				 <?php }?>
                 <div class="form-group col-md-12">
                   <label for="productqty">
                   Product Qty

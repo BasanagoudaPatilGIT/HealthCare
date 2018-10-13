@@ -131,6 +131,8 @@ $('#stripsinbox').css("display", "none");
 $('#bottlesinbox').css("display","");
 $('#pcsinstrip').css("display", "none");
 $('#mlinbottle').css("display","");
+$('#pcsuom').css("display", "none");
+$('#botuom').css("display","");
 });
 </script>
 
@@ -140,6 +142,8 @@ $('#producttypeTablet').click(function(){
 	$('#stripsinbox').css("display", "");
 	$('#pcsinstrip').css("display", "");
 	$('#mlinbottle').css("display","none");
+	$('#pcsuom').css("display", "");
+	$('#botuom').css("display","none");
 });
 </script>
 

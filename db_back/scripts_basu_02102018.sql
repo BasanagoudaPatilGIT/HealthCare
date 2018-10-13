@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 01, 2018 at 01:11 PM
+-- Generation Time: Oct 13, 2018 at 11:45 AM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.12
 
@@ -88,7 +88,12 @@ INSERT INTO `tab_basic` (`user_id`, `browser_name`, `last_access`, `id`) VALUES
 ('Vinod Kadolli', 'Chrome;69.0.3497.100;;Windows 10', '2018-10-01 06:15:20', 45),
 ('Vinod Kadolli', 'Chrome;69.0.3497.100;;Windows 10', '2018-10-01 09:12:56', 46),
 ('Basanagouda Patil', 'Chrome;69.0.3497.100;;Windows 10', '2018-10-01 11:01:02', 47),
-('Vinod Kadolli', 'Chrome;69.0.3497.100;;Windows 10', '2018-10-01 11:02:20', 48);
+('Vinod Kadolli', 'Chrome;69.0.3497.100;;Windows 10', '2018-10-01 11:02:20', 48),
+('Vinod Kadolli', 'Chrome;69.0.3497.100;;Windows 10', '2018-10-03 05:46:42', 49),
+('Vinod Kadolli', 'Chrome;69.0.3497.100;;Windows 10', '2018-10-03 07:12:21', 50),
+('Vinod Kadolli', 'Chrome;69.0.3497.100;;Windows 10', '2018-10-03 13:18:18', 51),
+('Vinod Kadolli', 'Chrome;69.0.3497.100;;Windows 10', '2018-10-06 06:12:31', 52),
+('Vinod Kadolli', 'Chrome;69.0.3497.100;;Windows 10', '2018-10-13 05:37:34', 53);
 
 -- --------------------------------------------------------
 
@@ -166,6 +171,7 @@ CREATE TABLE IF NOT EXISTS `tab_invoice_h` (
   `invoice_amt` double(65,2) NOT NULL,
   `total_tax_amt` decimal(65,2) NOT NULL,
   `total_gross_amt` decimal(65,2) NOT NULL,
+  `created_date` date NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -173,11 +179,11 @@ CREATE TABLE IF NOT EXISTS `tab_invoice_h` (
 -- Dumping data for table `tab_invoice_h`
 --
 
-INSERT INTO `tab_invoice_h` (`id`, `fees`, `invoice_no`, `patient_name`, `patient_gender`, `patient_phoneno`, `patient_address`, `user_id`, `created_datetime`, `invoice_amt`, `total_tax_amt`, `total_gross_amt`) VALUES
-(1, 15.00, '#I1001-1', 'Vinayak', 'Male', 2147483647, 'test', 2, '2018-10-01 12:32:50', 100.00, '1.24', '83.50'),
-(2, 141.00, '#I1001-2', 'Ganesh', 'Male', 2147483647, 'test', 2, '2018-10-01 12:34:09', 850.00, '8.75', '700.00'),
-(3, 23.00, '#I1001-3', 'Ganesh', 'Male', 2147483647, '76dgfgdf', 2, '2018-10-01 12:35:54', 27.00, '0.04', '3.50'),
-(4, 1.00, '#I1001-4', 'Vinayak', 'Male', 2147483647, 'test', 2, '2018-10-01 17:35:42', 4.00, '0.05', '2.50');
+INSERT INTO `tab_invoice_h` (`id`, `fees`, `invoice_no`, `patient_name`, `patient_gender`, `patient_phoneno`, `patient_address`, `user_id`, `created_datetime`, `invoice_amt`, `total_tax_amt`, `total_gross_amt`, `created_date`) VALUES
+(1, 15.00, '#I1001-1', 'Vinayak', 'Male', 2147483647, 'test', 2, '2018-10-01 12:32:50', 100.00, '1.24', '83.50', '2018-10-01'),
+(2, 141.00, '#I1001-2', 'Ganesh', 'Male', 2147483647, 'test', 2, '2018-10-03 12:34:09', 850.00, '8.75', '700.00', '2018-10-03'),
+(3, 23.00, '#I1001-3', 'Ganesh', 'Male', 2147483647, '76dgfgdf', 2, '2018-10-03 12:35:54', 27.00, '0.04', '3.50', '2018-10-03'),
+(4, 1.00, '#I1001-4', 'Vinayak', 'Male', 2147483647, 'test', 2, '2018-10-03 17:35:42', 4.00, '0.05', '2.50', '2018-10-03');
 
 -- --------------------------------------------------------
 
@@ -231,19 +237,22 @@ CREATE TABLE IF NOT EXISTS `tab_product` (
   `product_name` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
   `product_qty` int(255) NOT NULL,
   `createddatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `status` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
   `user_id` int(10) NOT NULL,
   `qtylimit` int(100) NOT NULL,
   `packdate` date NOT NULL,
   `expirydate` date NOT NULL,
-  `stripsinbox` int(100) NOT NULL,
-  `pcsinstrip` int(100) NOT NULL,
+  `stripsinbox` int(10) NOT NULL,
+  `pcsinstrip` int(10) NOT NULL,
+  `bottlesinbox` int(10) NOT NULL,
+  `mlinbottle` int(10) NOT NULL,
   `mrp` decimal(65,2) NOT NULL,
   `salerate` decimal(65,2) NOT NULL,
   `purrate` decimal(65,2) NOT NULL,
   `abtproduct` text COLLATE utf8_unicode_ci NOT NULL,
   `batchno` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `tax_percent` double(65,2) NOT NULL,
+  `product_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -251,14 +260,17 @@ CREATE TABLE IF NOT EXISTS `tab_product` (
 -- Dumping data for table `tab_product`
 --
 
-INSERT INTO `tab_product` (`id`, `product_code`, `product_name`, `product_qty`, `createddatetime`, `status`, `user_id`, `qtylimit`, `packdate`, `expirydate`, `stripsinbox`, `pcsinstrip`, `mrp`, `salerate`, `purrate`, `abtproduct`, `batchno`, `tax_percent`) VALUES
-(1, 'P1001-1', 'Crocine 120', 798, '2018-10-01 11:51:50', 'Active', 2, 250, '2018-10-01', '2018-11-30', 10, 20, '3.25', '3.50', '2.50', 'Crocine 120', 'P1001-1-2018-11-30-3-2-3', 1.25),
-(2, 'P1001-2', 'Acetaminophen', 180, '2018-10-01 11:53:25', 'Active', 2, 100, '2018-10-01', '2019-02-28', 10, 20, '5.00', '4.00', '3.00', 'Acetaminophen', 'P1001-2-2019-02-28-5-3-4', 1.50),
-(3, 'P1001-3', 'Atorvastatin', 300, '2018-10-01 12:39:56', 'Active', 2, 100, '2018-10-01', '2018-10-31', 10, 10, '4.32', '5.00', '3.00', 'Atorvastatin', 'P1001-3-2018-10-31-4-3-5', 1.00),
-(4, 'P1001-4', 'Azulene', 201, '2018-10-01 13:14:56', 'Active', 2, 10, '2018-10-01', '2018-10-01', 10, 10, '1.00', '1.00', '1.00', 'a', 'P1001-4-2018-10-01-1-1-1', 1.00),
-(5, 'P1001-5', 'citrazin', 9, '2018-10-01 14:36:18', 'Active', 2, 100, '2018-10-01', '2018-12-28', 10, 10, '2.00', '2.50', '1.20', 'citrazin', 'P1001-5-2018-12-28-2-1-2', 2.00),
-(6, 'P1001-6', 'Acebrofylline', 100, '2018-10-01 16:47:09', 'Active', 2, 100, '2018-10-01', '2018-10-31', 10, 10, '5.00', '2.00', '3.00', 'Acebrofylline', 'P1001-6-2018-10-31-5-3-2', 2.00),
-(7, 'P1001-7', ' Acetaminophen and Codeine', 100, '2018-10-01 16:52:37', 'Active', 2, 200, '2018-09-01', '2018-12-31', 10, 10, '15.23', '14.00', '13.00', ' Acetaminophen and Codeine', 'P1001-7-2018-12-31-15-13-14', 4.00);
+INSERT INTO `tab_product` (`id`, `product_code`, `product_name`, `product_qty`, `createddatetime`, `status`, `user_id`, `qtylimit`, `packdate`, `expirydate`, `stripsinbox`, `pcsinstrip`, `bottlesinbox`, `mlinbottle`, `mrp`, `salerate`, `purrate`, `abtproduct`, `batchno`, `tax_percent`, `product_type`) VALUES
+(1, 'P1001-1', 'Crocine 120', 798, '2018-10-01 11:51:50', 'Active', 2, 250, '2018-10-01', '2018-11-30', 10, 20, 0, 0, '3.25', '3.50', '2.50', 'Crocine 120', 'P1001-1-2018-11-30-3-2-3', 1.25, 'Tablet'),
+(2, 'P1001-2', 'Acetaminophen', 180, '2018-10-01 11:53:25', 'Active', 2, 100, '2018-10-01', '2019-02-28', 10, 20, 0, 0, '5.00', '4.00', '3.00', 'Acetaminophen', 'P1001-2-2019-02-28-5-3-4', 1.50, 'Tablet'),
+(3, 'P1001-3', 'Atorvastatin', 300, '2018-10-01 12:39:56', 'Active', 2, 100, '2018-10-01', '2018-10-31', 10, 10, 0, 0, '4.32', '5.00', '3.00', 'Atorvastatin', 'P1001-3-2018-10-31-4-3-5', 1.00, 'Tablet'),
+(4, 'P1001-4', 'Azulene', 201, '2018-10-01 13:14:56', 'Active', 2, 10, '2018-10-01', '2018-10-01', 10, 10, 0, 0, '1.00', '1.00', '1.00', 'a', 'P1001-4-2018-10-01-1-1-1', 1.00, 'Tablet'),
+(5, 'P1001-5', 'citrazin', 10, '2018-10-01 14:36:18', 'Active', 2, 100, '2018-10-01', '2018-12-28', 10, 10, 0, 0, '2.00', '2.50', '1.20', 'citrazin', 'P1001-5-2018-12-28-2-1-2', 2.00, 'Tablet'),
+(6, 'P1001-6', 'Acebrofylline', 100, '2018-10-01 16:47:09', 'Active', 2, 100, '2018-10-01', '2018-10-31', 10, 10, 0, 0, '5.00', '2.00', '3.00', 'Acebrofylline', 'P1001-6-2018-10-31-5-3-2', 2.00, 'Tablet'),
+(7, 'P1001-7', ' Acetaminophen and Codeine', 100, '2018-10-01 16:52:37', 'Active', 2, 200, '2018-09-01', '2018-12-31', 10, 10, 0, 0, '15.23', '14.00', '13.00', ' Acetaminophen and Codeine', 'P1001-7-2018-12-31-15-13-14', 4.00, 'Tablet'),
+(8, 'P1001-5', 'citrazin', 1, '2018-10-03 11:38:50', 'Active', 2, 100, '2018-10-01', '2019-04-05', 10, 10, 0, 0, '2.00', '2.50', '1.20', 'citrazin', 'P1001-5-2019-04-05-2-1-2', 0.00, 'Tablet'),
+(9, 'P1001-8', 'SBL Relaxhed Drop', 25000, '2018-10-13 13:35:35', 'Active', 2, 5000, '2018-10-13', '2019-01-05', 0, 0, 5, 500, '0.10', '0.09', '0.08', 'SBL Relaxhed Drop', 'P1001-8-2019-01-05-50-40-45', 2.00, 'Liquid'),
+(10, 'P1001-9', 'Salactin Paint', 2500, '2018-10-13 15:36:47', 'Active', 2, 2500, '2018-10-13', '2018-11-10', 0, 0, 5, 250, '1.00', '0.98', '0.96', 'Salactin Paint', 'P1001-9-2018-11-10-250-240-245', 2.50, 'Liquid');
 
 -- --------------------------------------------------------
 
@@ -318,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `tab_series` (
 --
 
 INSERT INTO `tab_series` (`id`, `series_id`, `continues_count`, `last_updated`, `user_id`) VALUES
-(1, 'P', 8, '2018-10-01', 1001),
+(1, 'P', 10, '2018-10-13', 1001),
 (2, '#I', 4, '2018-10-01', 1001);
 
 -- --------------------------------------------------------

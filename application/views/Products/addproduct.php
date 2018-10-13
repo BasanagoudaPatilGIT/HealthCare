@@ -77,7 +77,7 @@
               <div class="box-body">
                 <div class="form-group col-md-12">
                   <label for="mrp">
-                  MRP [For Pc.]
+                  MRP [For Pc/Bottle.]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="mrp" name="mrp" type="text" placeholder="MRP"
@@ -85,7 +85,7 @@
                   <?php echo form_error('mrp','<div style="color:#FF0000;">','</div>'); ?> </div>
                 <div class="form-group col-md-12">
                   <label for="purrate">
-                  Purchase Rate [For Pc.]
+                  Purchase Rate [For Pc/Bottle.]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="purrate" name="purrate" type="text" placeholder="Purchase Rate"
@@ -93,7 +93,7 @@
                   <?php echo form_error('purrate','<div style="color:#FF0000;">','</div>'); ?> </div>
                 <div class="form-group col-md-12">
                   <label for="salerate">
-                  Sale Rate [For Pc.]
+                  Sale Rate [For Pc/Bottle.]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="salerate" name="salerate" type="text" placeholder="Sale Rate"
@@ -139,9 +139,9 @@
                   Bottles in Box.
                   <label style="color:#FF0000"> *</label>
                   </label>
-                  <input class="form-control" id="strips" name="strips" type="text" placeholder="Bottles in Box" 
-				 value="<?php echo set_value('strips')?>" onKeyUp="isnum(this)">
-				 <?php echo form_error('strips','<div style="color:#FF0000;">','</div>'); ?>
+                  <input class="form-control" id="botinbox" name="botinbox" type="text" placeholder="Bottles in Box" 
+				 value="<?php echo set_value('botinbox')?>" onKeyUp="isnum(this)">
+				 <?php echo form_error('botinbox','<div style="color:#FF0000;">','</div>'); ?>
                 </div>
 				
 				<div id="pcsinstrip" class="form-group col-md-12">
@@ -158,20 +158,20 @@
                   ml in Bottle.
                   <label style="color:#FF0000"> *</label>
                   </label>
-                  <input class="form-control" id="pcs" name="pcs" type="text" placeholder="ml in Strip" 
-				 value="<?php echo set_value('pcs')?>" onKeyUp="isnum(this)">
-				 <?php echo form_error('pcs','<div style="color:#FF0000;">','</div>'); ?>
+                  <input class="form-control" id="pcs" name="mlinbot" type="mlinbot" placeholder="ml in Bottle" 
+				 value="<?php echo set_value('mlinbot')?>" onKeyUp="isnum(this)">
+				 <?php echo form_error('mlinbot','<div style="color:#FF0000;">','</div>'); ?>
                 </div>
 				<div class="form-group col-md-12">
                   <label for="qtylmt">
-                  Quantity Limit
+                  Quantity Limit[In Pcs/Bottles]
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="qtylmt" name="qtylmt" type="text" placeholder="Quantity Limit"
-					 value="<?php echo set_value('productqty')?>" onKeyUp="isnum(this)">
-                  <?php echo form_error('productqty','<div style="color:#FF0000;">','</div>'); ?> 
+					 value="<?php echo set_value('qtylmt')?>" onKeyUp="isnum(this)">
+                  <?php echo form_error('qtylmt','<div style="color:#FF0000;">','</div>'); ?> 
 				  </div>
-				<div class="form-group col-md-12">
+				<div id="pcsuom" class="form-group col-md-12">
 					<label for="uom">Product UOM </label> <label style="color:#FF0000"> *</label>
 					<?php
 							$cbo_uom = 
@@ -186,6 +186,21 @@
 							echo form_dropdown('cbo_uom',$cbo_uom,set_value('cbo_uom'), $attributes);
 					?>
 					<?php echo form_error('cbo_uom','<div style="color:#FF0000;">','</div>'); ?>		   
+					</div>
+				  <div id="botuom" class="form-group col-md-12" style="display:none">
+					<label for="uom">Product UOM </label> <label style="color:#FF0000"> *</label>
+					<?php
+							$cbo_uom_bot = 
+							 array(   
+										'' => '- SELECT - ',
+										'Boxes' => 'Boxes',
+										'Bottles' =>'Bottles'
+									  
+									);
+							$attributes = 'class = "form-control" id = "cbo_uom_bot"';
+							echo form_dropdown('cbo_uom_bot',$cbo_uom_bot,set_value('cbo_uom_bot'), $attributes);
+					?>
+					<?php echo form_error('cbo_uom_bot','<div style="color:#FF0000;">','</div>'); ?>		   
 							 
 				  </div>
                 <div class="form-group col-md-12">
