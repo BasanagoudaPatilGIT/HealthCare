@@ -91,22 +91,57 @@ $(document).ready(function() {
 $( "#productname" ).autocomplete({
   source: "<?php echo base_url()?>/Invoice/auto_search/?",
   select: function(event,ui){
-$('[name="productname"]').val(ui.item.label);
+if(ui.item.product_type === "Tablet"){
+	 $('[name="productname"]').val(ui.item.label);
 $('[name="batchno"]').val(ui.item.batchno);
 $('[name="productid"]').val(ui.item.id);
 $('[name="productcode"]').val(ui.item.prodcode);
+$('[name="prodtype"]').val(ui.item.product_type);
 $('[name="stock"]').val(ui.item.stock);
 $('[name="salerate"]').val(ui.item.price);
 $('[name="tax"]').val(ui.item.tax);
 $('[name="stripsinbox"]').val(ui.item.stripsinbox);
 $('[name="pcsinstrip"]').val(ui.item.pcsinstrip);
+$('[name="bottlesinbox"]').val(ui.item.bottlesinbox);
+$('[name="mlinbottle"]').val(ui.item.mlinbottle);
 $('[name="stockinbox"]').val(ui.item.stockinbox);
 $('[name="stockinstrip"]').val(ui.item.stockinstrips);
+$('[name="botstockinbox"]').val(ui.item.botstockinbox);
+$('[name="stockinbottle"]').val(ui.item.stockinbottle);
 $('[name="stockinpcs"]').val(ui.item.stock);
 $('[name="qty"]').val(1);
 $('[name="lineamount"]').val($('#qty').val() * $('#salerate').val());
 $('[name="linetaxamt"]').val($('#lineamount').val() * $('#tax').val() /100);
 $('[name="cbo_uom"]').val("Pcs");
+$("#cbo_uom option[value='Ml']").remove();
+$("#cbo_uom option[value='Bottles']").remove();
+	
+}else if(ui.item.product_type === "Liquid"){
+	 $('[name="productname"]').val(ui.item.label);
+$('[name="batchno"]').val(ui.item.batchno);
+$('[name="productid"]').val(ui.item.id);
+$('[name="productcode"]').val(ui.item.prodcode);
+$('[name="stock"]').val(ui.item.stock);
+$('[name="prodtype"]').val(ui.item.product_type);
+$('[name="salerate"]').val(ui.item.price);
+$('[name="tax"]').val(ui.item.tax);
+$('[name="stripsinbox"]').val(ui.item.stripsinbox);
+$('[name="pcsinstrip"]').val(ui.item.pcsinstrip);
+$('[name="bottlesinbox"]').val(ui.item.bottlesinbox);
+$('[name="mlinbottle"]').val(ui.item.mlinbottle);
+$('[name="stockinbox"]').val(ui.item.stockinbox);
+$('[name="stockinstrip"]').val(ui.item.stockinstrips);
+$('[name="botstockinbox"]').val(ui.item.botstockinbox);
+$('[name="stockinbottle"]').val(ui.item.stockinbottle);
+$('[name="stockinpcs"]').val(ui.item.stock);
+$('[name="qty"]').val(1);
+$('[name="lineamount"]').val($('#qty').val() * $('#salerate').val());
+$('[name="linetaxamt"]').val($('#lineamount').val() * $('#tax').val() /100);
+$('[name="cbo_uom"]').val("Ml");
+$("#cbo_uom option[value='Pcs']").remove();
+$("#cbo_uom option[value='Strips']").remove();
+}
+
 }
 });
 });
@@ -157,10 +192,20 @@ $('#cbo_uom').change(function(){
 	alert('Select Product Fisrt');
 	}else{
 	if($('#cbo_uom').val() == 'Boxes'){
-	$('#stock').val($('#stockinbox').val());
+		
+	if($('#prodtype').val() == "Tablet"){
+		$('#stock').val($('#stockinbox').val());
+	}else if($('#prodtype').val() == "Liquid"){
+		$('#stock').val($('#botstockinbox').val());
+	}
+	
 	}else if($('#cbo_uom').val() == 'Strips'){
 	$('#stock').val($('#stockinstrip').val());
 	}else if($('#cbo_uom').val() == 'Pcs'){
+	$('#stock').val($('#stockinpcs').val());
+	}else if($('#cbo_uom').val() === 'Bottles'){
+	$('#stock').val($('#stockinbottle').val());
+	}else if($('#cbo_uom').val() == 'Ml'){
 	$('#stock').val($('#stockinpcs').val());
 	}
 	}
@@ -177,6 +222,10 @@ $('#qty').change(function(){
 	$stockinbox = $('#stockinbox').val();
 	$stockinstrip = $('#stockinstrip').val();
 	$stockinpcs = $('#stockinpcs').val();
+	$stockinbottle = $('#stockinbottle').val();
+	$botstockinbox = $('#botstockinbox').val();
+	$mlinbottle = $('#mlinbottle').val();
+	$bottlesinbox = $('#bottlesinbox').val();
 	
 	if($('#cbo_uom').val() == 'Boxes'){
 	if($('#qty').val() >= $stockinbox ){
@@ -185,10 +234,19 @@ $('#qty').change(function(){
 	$('#lineamount').val('');
 	$('#linetaxamt').val('');
 	}else{
+		
+	if($('#prodtype').val() == "Tablet"){
 	$amt = $('#qty').val() * $('#stripsinbox').val() * $('#pcsinstrip').val() * $('#salerate').val();
 	$tax = $amt * $('#tax').val() /100;
 	$('#linetaxamt').val($tax);
 	$('#lineamount').val($amt);
+	}else if($('#prodtype').val() == "Liquid"){
+	$amt = $('#qty').val() * $('#bottlesinbox').val() * $('#mlinbottle').val() * $('#salerate').val();
+	$tax = $amt * $('#tax').val() /100;
+	$('#linetaxamt').val($tax);
+	$('#lineamount').val($amt);
+	}
+		
 	}
 	}else if($('#cbo_uom').val() == 'Strips'){
 	
@@ -216,6 +274,30 @@ $('#qty').change(function(){
 	$('#linetaxamt').val($tax);
 	$('#lineamount').val($amt);
 	}
+	}else if($('#cbo_uom').val() == 'Bottles'){
+			if($('#qty').val() >= $stockinbottle ){
+			alert("Entered Qty is more than stock");
+			$('#qty').val('');
+			$('#lineamount').val('');
+			$('#linetaxamt').val('');
+			}else{
+			$amt = $('#qty').val() * $('#mlinbottle').val() * $('#salerate').val();
+			$tax = $amt * $('#tax').val() /100;
+			$('#linetaxamt').val($tax);
+			$('#lineamount').val($amt);
+			}
+	}else if($('#cbo_uom').val() == 'Ml'){
+			if($('#qty').val() >= $stockinpcs ){
+			alert("Entered Qty is more than stock");
+			$('#qty').val('');
+			$('#lineamount').val('');
+			$('#linetaxamt').val('');
+			}else{
+			$amt = $('#qty').val() * $('#salerate').val();
+			$tax = $amt * $('#tax').val() /100;
+			$('#linetaxamt').val($tax);
+			$('#lineamount').val($amt);
+			}
 	}
 	}
 });

@@ -48,13 +48,13 @@
                 <td align="center"><?php echo $row['salerate']?></td>
 				
 				<?php if($row['product_type'] == "Tablet"){ ?>
-				<?php if($row['product_qty'] >= $row['qtylimit']){ ?>
+				<?php if($row['product_qty'] > $row['qtylimit']){ ?>
                 <td align="center"><?php echo $row['product_qty'];?></td>
                 <?php }else{ ?>
 				<td title="This product have low stock" class="text-red" align="center"><b><?php echo $row['product_qty'];?></b></td>
 				<?php } ?>
 				 <?php }else if($row['product_type'] == "Liquid"){ ?>
-				<?php if($row['product_qty'] >= $row['qtylimit']){ ?>
+				<?php if($row['product_qty'] > $row['qtylimit']){ ?>
                 <td align="center"><?php echo (int)($row['product_qty']/$row['mlinbottle'])?></td>
                 <?php }else{ ?>
 				<td title="This product have low stock" class="text-red" align="center"><b><?php echo (int)($row['product_qty']/$row['mlinbottle'])?></b></td>
@@ -108,13 +108,13 @@
                 <td align="center"><?php echo $row['salerate']?></td>
 				
 				<?php if($row['product_type'] == "Tablet"){ ?>
-				<?php if($row['product_qty'] >= $row['qtylimit']){ ?>
+				<?php if($row['product_qty'] > $row['qtylimit']){ ?>
                 <td align="center"><?php echo $row['product_qty'];?></td>
                 <?php }else{ ?>
 				<td title="This product have low stock" class="text-red" align="center"><b><?php echo $row['product_qty'];?></b></td>
 				<?php } ?>
 				 <?php }else if($row['product_type'] == "Liquid"){ ?>
-				<?php if($row['product_qty'] >= $row['qtylimit']){ ?>
+				<?php if($row['product_qty'] > $row['qtylimit']){ ?>
                 <td align="center"><?php echo (int)($row['product_qty']/$row['mlinbottle'])?></td>
                 <?php }else{ ?>
 				<td title="This product have low stock" class="text-red" align="center"><b><?php echo (int)($row['product_qty']/$row['mlinbottle'])?></b></td>

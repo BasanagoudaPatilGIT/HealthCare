@@ -52,11 +52,13 @@ class Invoice extends CI_Controller {
 		{
 		$uom = $this->input->post('cbo_uom');
 		$batch = $this->input->post('batchno');
+		$prodtype = $this->input->post('prodtype');
 		$data =array
 			(
 				'product_id'=>$this->input->post('productid'),
 				'product_code'=>$this->input->post('productcode'),
 				'product_name'=>$this->input->post('productname'),
+				'product_type'=>$prodtype,
 				'batchno'=>$batch,
 				'stock'=>$this->input->post('stock'),
 				'sale_rate'=>$this->input->post('salerate'),
@@ -70,35 +72,63 @@ class Invoice extends CI_Controller {
 			);			
 			
 			$this->Invoice_model->add_record($data);
-			if($uom === 'Boxes'){
-			$upqty = (int)$this->input->post('qty') * (int)$this->input->post('stripsinbox') * (int)$this->input->post('pcsinstrip');
-			$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
-			//print_r($stock);
-			$data = array(
-				'product_qty'=>$stock,
-			);
-			
-			}else if($uom === 'Strips'){
-			$upqty = (int)$this->input->post('qty') * (int)$this->input->post('pcsinstrip');
-			$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
-			//print_r($stock);
-			$data = array(
-				'product_qty'=>$stock,
-			);
-			}else if($uom === 'Pcs'){
-			$upqty = (int)$this->input->post('qty');
-			$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
-			//print_r($stock);
-			$data = array(
-				'product_qty'=>$stock,
-			);
-			}
-			
-			$this->Product_model->update_stock($data,$batch);
+			if($uom == 'Boxes'){
+				
+				if($prodtype == "Tablet"){
+					$upqty = (int)$this->input->post('qty') * (int)$this->input->post('stripsinbox') * (int)$this->input->post('pcsinstrip');
+					$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
+					//print_r($stock);
+					$data = array(
+						'product_qty'=>$stock,
+					);
+					$this->Product_model->update_stock($data,$batch);
+				}elseif($prodtype == "Liquid"){
+					$upqty = (int)$this->input->post('qty') * (int)$this->input->post('bottlesinbox') * (int)$this->input->post('mlinbottle');
+					$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
+					print_r($this->input->post('qty'));
+					$data = array(
+						'product_qty'=>$stock,
+					);
+					$this->Product_model->update_stock($data,$batch);
+					}
 			
 			
-			
-			redirect(base_url().'Invoice/createinvoice');  
+				}else if($uom == 'Strips'){
+				$upqty = (int)$this->input->post('qty') * (int)$this->input->post('pcsinstrip');
+				$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
+				//print_r($stock);
+				$data = array(
+					'product_qty'=>$stock,
+				);
+				$this->Product_model->update_stock($data,$batch);
+				}else if($uom == 'Pcs'){
+				$upqty = (int)$this->input->post('qty');
+				$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
+				//print_r($stock);
+				$data = array(
+					'product_qty'=>$stock,
+				);
+				$this->Product_model->update_stock($data,$batch);
+				}else if($uom == 'Bottles'){
+				$upqty = (int)$this->input->post('qty') * (int)$this->input->post('mlinbottle');
+				$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
+				print_r($this->input->post('qty'));
+				$data = array(
+					'product_qty'=>$stock,
+				);
+				$this->Product_model->update_stock($data,$batch);
+				}else if($uom == 'Ml'){
+				$upqty = (int)$this->input->post('qty');
+				print_r($upqty);
+				$stock = (int)$this->input->post('stockinpcs')- (int)$upqty;
+				print_r($this->input->post('qty'));
+				$data = array(
+					'product_qty'=>$stock,
+				);
+				$this->Product_model->update_stock($data,$batch);
+				}
+				
+				redirect(base_url().'Invoice/createinvoice');  
 			
 		
 		}
@@ -124,6 +154,7 @@ class Invoice extends CI_Controller {
 		$this->form_validation->set_rules('patientphoneno','Patient PhoneNo','required|numeric');
 		$this->form_validation->set_rules('prodcount', 'Prodcount', 'callback_prodcount_check');
 		$this->form_validation->set_rules('fees','Fees','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('age','Age','required|numeric|is_natural_no_zero');
 		
 		if(($this->form_validation->run())==false)
 		{
@@ -142,6 +173,7 @@ class Invoice extends CI_Controller {
 				'patient_name'=>$this->input->post('patientname'),
 				'patient_gender'=>$this->input->post('cbo_gender'),
 				'patient_phoneno'=>$this->input->post('patientphoneno'),
+				'age'=>$this->input->post('age'),
 				'patient_address'=>$this->input->post('address'),
 				'invoice_amt'=>$this->input->post('totalamt'),
 				'total_tax_amt'=>$this->input->post('totaltaxamt'),
@@ -164,6 +196,7 @@ class Invoice extends CI_Controller {
 					'product_id'=>$data['lineinvoice'][$i]['product_id'],
 					'product_code'=>$data['lineinvoice'][$i]['product_code'],
 					'product_name'=>$data['lineinvoice'][$i]['product_name'],
+					'product_type'=>$data['lineinvoice'][$i]['product_type'],
 					'batchno'=>$data['lineinvoice'][$i]['batchno'],
 					'stock'=>$data['lineinvoice'][$i]['stock'],
 					'sale_rate'=>$data['lineinvoice'][$i]['sale_rate'],
@@ -218,6 +251,7 @@ class Invoice extends CI_Controller {
 		foreach($proddetails as $row)
 		
 		$result_array[] = array('label' => $row->product_name,
+								'product_type' => $row->product_type,
 								'id' => $row->id,
 								'prodcode' => $row->product_code,
 								'batchno' => $row->batchno,
@@ -225,9 +259,13 @@ class Invoice extends CI_Controller {
 								'price' => $row->salerate,
 								'tax' => $row->tax_percent,
 								'stripsinbox' =>$row->stripsinbox,
+								'bottlesinbox' => $row->bottlesinbox,
+								'mlinbottle' => $row->mlinbottle,
 								'pcsinstrip' =>$row->pcsinstrip,
 								'stockinbox' =>(int)((int)$row->product_qty /((int)$row->stripsinbox * (int)$row->pcsinstrip)),
-								'stockinstrips' =>(int)((int)$row->product_qty /(int)$row->pcsinstrip)
+								'stockinstrips' =>(int)((int)$row->product_qty /(int)$row->pcsinstrip),
+								'botstockinbox' =>(int)((int)$row->product_qty /((int)$row->bottlesinbox * (int)$row->mlinbottle)),
+								'stockinbottle' =>(int)((int)$row->product_qty /(int)$row->mlinbottle),
 		);
 		
 		echo json_encode($result_array);
@@ -251,21 +289,36 @@ class Invoice extends CI_Controller {
 		}	
 		
 		$tempproddetails = $this->Product_model->get_temp_record_by_id($id);
-		//print_r($data['tempproddetails'] );
+		//print_r($tempproddetails );
 		$uom = $tempproddetails['product_uom'];
 		$batch = $tempproddetails['batchno'];
 		$proddetails = $this->Product_model->get_record_by_batch($batch);
 		
 		$this->Invoice_model->delete_record($id);
 		
-		if($uom === 'Boxs'){
+		if($uom === 'Boxes'){
+			
+			
+			
+			if($proddetails['product_type'] == "Tablet"){
 			$upqty = (int)$tempproddetails['product_qty'] * (int)$proddetails['stripsinbox'] * (int)$proddetails['pcsinstrip'];
 			$stock = (int)$proddetails['product_qty'] + (int)$upqty;
-			print_r($stock);
+			print_r($tempproddetails['product_qty']);
 			$data = array(
 				'product_qty'=>$stock,
 			);
 			$this->Product_model->update_stock($data,$batch);
+			}else if($proddetails['product_type'] == "Liquid"){
+				
+			$upqty = (int)$tempproddetails['product_qty'] * (int)$proddetails['bottlesinbox'] * (int)$proddetails['mlinbottle'];
+			$stock = (int)$proddetails['product_qty'] + (int)$upqty;
+			print_r($tempproddetails['product_qty']);
+			$data = array(
+				'product_qty'=>$stock,
+			);
+			$this->Product_model->update_stock($data,$batch);
+			}
+			
 			}else if($uom === 'Strips'){
 			$upqty = (int)$tempproddetails['product_qty'] *  (int)$proddetails['pcsinstrip'];
 			$stock = (int)$proddetails['product_qty'] + (int)$upqty;
@@ -283,9 +336,27 @@ class Invoice extends CI_Controller {
 				'product_qty'=>$stock,
 			);
 			$this->Product_model->update_stock($data,$batch);
+			}else if($uom === 'Bottles'){
+			
+			$upqty = (int)$tempproddetails['product_qty'] * (int)$proddetails['mlinbottle'];
+			$stock = (int)$proddetails['product_qty'] + (int)$upqty;
+			print_r($tempproddetails['product_qty']);
+			$data = array(
+				'product_qty'=>$stock,
+			);
+			$this->Product_model->update_stock($data,$batch);
+			}else if($uom === 'Ml'){
+			
+			$upqty = (int)$tempproddetails['product_qty'];
+			$stock = (int)$proddetails['product_qty'] + (int)$upqty;
+			print_r($tempproddetails['product_qty']);
+			$data = array(
+				'product_qty'=>$stock,
+			);
+			$this->Product_model->update_stock($data,$batch);
 			}
 			
-		//redirect(base_url().'Invoice/createinvoice'); 
+		redirect(base_url().'Invoice/createinvoice'); 
 	}
 	
 	public function prodcount_check($str)

@@ -58,8 +58,15 @@
 					<input class="form-control" id="productcode" name="productcode" type="hidden">
 					<input class="form-control" id="stripsinbox" name="stripsinbox" type="hidden">
 					<input class="form-control" id="pcsinstrip" name="pcsinstrip" type="hidden">
+					
+					<input class="form-control" id="bottlesinbox" name="bottlesinbox" type="hidden">
+					<input class="form-control" id="mlinbottle" name="mlinbottle" type="hidden">
+					
+					<input class="form-control" id="prodtype" name="prodtype" type="hidden">
 					<input class="form-control" id="stockinbox" name="stockinbox" type="hidden">
 					<input class="form-control" id="stockinstrip" name="stockinstrip" type="hidden">
+					<input class="form-control" id="botstockinbox" name="botstockinbox" type="hidden">
+					<input class="form-control" id="stockinbottle" name="stockinbottle" type="hidden">
 					<input class="form-control" id="stockinpcs" name="stockinpcs" type="hidden">
 					  <td><input class="form-control" id="productname" name="productname" type="text" placeholder="Search Product" onKeyUp="isalphanum(this)">
 						  <?php echo form_error('productname','<div style="color:#FF0000;">','</div>'); ?> 
@@ -74,7 +81,9 @@
 									 array(   
 												'Pcs' =>'Pcs',
 												'Boxes' => 'Boxes',
-												'Strips' =>'Strips'
+												'Strips' =>'Strips',
+												'Bottles' =>'Bottles',
+												'Ml' =>'Ml'
 												
 											  
 											);
@@ -145,11 +154,17 @@
 				?>
 				<?php echo form_error('cbo_gender','<div style="color:#FF0000;">','</div>'); ?>		
 		</div>
-		<div class="col-md-6  form-group">
+		<div class="col-md-4  form-group">
 				<label for="phoneno">Phone Number </label> <label style="color:#FF0000"> *</label>
 				<input class="form-control" id="patientphoneno" name="patientphoneno" type="text" placeholder="Enter Phone Number"
 				 value="<?php echo set_value('patientphoneno')?>" onKeyUp="isnum(this)" maxlength="10">
 				  <?php echo form_error('patientphoneno','<div style="color:#FF0000;">','</div>'); ?> 
+		</div>
+		<div class="col-md-2  form-group">
+				<label for="age">Age </label> <label style="color:#FF0000"> *</label>
+				<input class="form-control" id="age" name="age" type="text" placeholder="Enter Age"
+				 value="<?php echo set_value('age')?>" onKeyUp="isnum(this)" maxlength="3">
+				  <?php echo form_error('age','<div style="color:#FF0000;">','</div>'); ?> 
 		</div>
 		
 			<div class="col-md-6  form-group">
