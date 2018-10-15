@@ -50,7 +50,7 @@
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="curqty" name="curqty" type="text" readonly="" placeholder="Current Qty"  
-				 value="<?php echo $product_row['product_qty'] / $product_row['mlinbottle']  ?>">
+				 value="<?php echo (int)($product_row['product_qty'] / $product_row['mlinbottle'])  ?>">
                 </div>
 				  <?php }?>
 				
@@ -238,7 +238,7 @@
                   </label>
                   <input class="form-control" id="qtylmt" name="qtylmt" type="text" placeholder="Quantity Limit"
 					 value="<?php echo $product_row['qtylimit'] / $product_row['mlinbottle'] ?>" onKeyUp="isnum(this)">
-                  <?php echo form_error('productqty','<div style="color:#FF0000;">','</div>'); ?> 
+                  <?php echo form_error('qtylimit','<div style="color:#FF0000;">','</div>'); ?> 
 				  </div>
 				<div class="form-group col-md-12">
 					<label for="uom">Product UOM </label> <label style="color:#FF0000"> *</label>
@@ -264,7 +264,7 @@
                   </label>
                   <input class="form-control" id="productqty" name="productqty" type="text" placeholder="Product Qty"
 				 value="<?php echo set_value('productqty')?>" onKeyUp="isnum(this)">
-                  <?php echo form_error('productname','<div style="color:#FF0000;">','</div>'); ?> 
+                  <?php echo form_error('productqty','<div style="color:#FF0000;">','</div>'); ?> 
 				  </div>
               </div>
             </div>

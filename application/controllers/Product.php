@@ -35,16 +35,17 @@ class Product extends CI_Controller {
 		$this->form_validation->set_rules('salerate','Sale Rate','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('packdate','Pack Date','required');
 		$this->form_validation->set_rules('expdate','Expiry Date','required');
-		$this->form_validation->set_rules('cbo_uom_bot','Product UOM','required');
 		$this->form_validation->set_rules('qtylmt','Quantity Limit','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('taxper','Tax Percent','required|decimal');
 		
 		if($prodtype === "Tablet"){
 		$this->form_validation->set_rules('strips','Strips in Boxs.','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('pcs','Pcs in Stript.','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('cbo_uom','Product UOM','required');
 		}else if($prodtype === "Liquid"){
 		$this->form_validation->set_rules('botinbox','Bottles in Boxs.','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('mlinbot','Ml in Bottle.','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('cbo_uom_bot','Product UOM','required');
 		}
 		
 		
@@ -198,7 +199,6 @@ class Product extends CI_Controller {
 		$this->form_validation->set_rules('salerate','Sale Rate','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('packdate','Pack Date','required');
 		$this->form_validation->set_rules('expdate','Expiry Date','required');
-		$this->form_validation->set_rules('cbo_uom','Product UOM','required');
 		$this->form_validation->set_rules('qtylmt','Quantity Limit','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('taxper','Tax Percent','required|decimal');
 		
@@ -206,9 +206,11 @@ class Product extends CI_Controller {
 		if($prodtype === "Tablet"){
 		$this->form_validation->set_rules('strips','Strips in Boxs.','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('pcs','Pcs in Stript.','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('cbo_uom','Product UOM','required');
 		}else if($prodtype === "Liquid"){
 		$this->form_validation->set_rules('botinbox','Bottles in Boxs.','required|numeric|is_natural_no_zero');
 		$this->form_validation->set_rules('mlinbot','Ml in Bottle.','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('cbo_uom_bot','Product UOM','required');
 		}
 		
 		if(($this->form_validation->run())==false)
@@ -315,22 +317,12 @@ class Product extends CI_Controller {
 		if($batchno === $data['product_row']['batchno'] && $this->input->post('packdate') === $data['product_row']['packdate'] && $this->input->post('expdate') === $data['product_row']['expirydate']){
 		$uom = $this->input->post('cbo_uom_bot');
 		$prodqty = $this->input->post('productqty');
-		//print_r($uom);
 		if($uom === 'Boxes'){
-			//print_r($uom);
-			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs') + $this->input->post('curqty');
-		}elseif($uom === 'Strips'){
-			//print_r($uom);
-			$prodqty = $this->input->post('productqty') * $this->input->post('pcs') + $this->input->post('curqty');
-		}
-		
-		
-		if($uom === 'Boxes'){
-			$prodqty = $this->input->post('productqty') * $this->input->post('botinbox') * $this->input->post('mlinbot');
+			$prodqty = $this->input->post('productqty') * $this->input->post('botinbox') * $this->input->post('mlinbot') +($this->input->post('curqty') * $this->input->post('mlinbot')) ;
 		}elseif($uom === 'Bottles'){
-			$prodqty = $this->input->post('productqty') * $this->input->post('mlinbot');
+			$prodqty = $this->input->post('productqty') * $this->input->post('mlinbot')+($this->input->post('curqty') * $this->input->post('mlinbot')) ;
 		}
-		
+		$qtylmt =  $this->input->post('qtylmt') * $this->input->post('mlinbot');
 		$data =array
 			(
 				'status'=>'Active',
@@ -340,33 +332,28 @@ class Product extends CI_Controller {
 				'product_qty'=>$prodqty,
 				'abtproduct'=>$this->input->post('abtproduct'),
 				'batchno'=>$batchno,
-				'mrp'=>$this->input->post('mrp'),
-				'purrate'=>$this->input->post('purrate'),
-				'salerate'=>$this->input->post('salerate'),
+				'mrp'=>$this->input->post('mrp') / $this->input->post('mlinbot'),
+				'purrate'=>$this->input->post('purrate') / $this->input->post('mlinbot'),
+				'salerate'=>$this->input->post('salerate') / $this->input->post('mlinbot'),
 				'packdate'=>$this->input->post('packdate'),
 				'expirydate'=>$this->input->post('expdate'),
 				'stripsinbox'=>$this->input->post('strips'),
 				'pcsinstrip'=>$this->input->post('pcs'),
-				'qtylimit'=>$this->input->post('qtylmt'),
+				'qtylimit'=>$qtylmt,
 				'tax_percent'=>$this->input->post('taxper')
 				
 			);			
 		//print_r($data);
 			$this->Product_model->edit_record($data,$id);
 		}else{
-		$uom = $this->input->post('cbo_uom');
+		$uom = $this->input->post('cbo_uom_bot');
 		$prodqty = $this->input->post('productqty');
-		print_r($uom);
 		if($uom === 'Boxes'){
-			//print_r($uom);
-			$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs');
-		}elseif($uom === 'Strips'){
-			//print_r($uom);
-			$prodqty = $this->input->post('productqty') * $this->input->post('pcs');
-		}elseif($uom === 'Pcs'){
-			//print_r($uom);
-			$prodqty = $this->input->post('productqty');
+			$prodqty = $this->input->post('productqty') * $this->input->post('botinbox') * $this->input->post('mlinbot') +($this->input->post('curqty') * $this->input->post('mlinbot')) ;
+		}elseif($uom === 'Bottles'){
+			$prodqty = $this->input->post('productqty') * $this->input->post('mlinbot')+($this->input->post('curqty') * $this->input->post('mlinbot')) ;
 		}
+		$qtylmt =  $this->input->post('qtylmt') * $this->input->post('mlinbot');
 		$data =array
 			(
 				'status'=>'Active',
@@ -376,14 +363,14 @@ class Product extends CI_Controller {
 				'product_qty'=>$prodqty,
 				'abtproduct'=>$this->input->post('abtproduct'),
 				'batchno'=>$batchno,
-				'mrp'=>$this->input->post('mrp'),
-				'purrate'=>$this->input->post('purrate'),
-				'salerate'=>$this->input->post('salerate'),
+				'mrp'=>$this->input->post('mrp') / $this->input->post('mlinbot'),
+				'purrate'=>$this->input->post('purrate') / $this->input->post('mlinbot'),
+				'salerate'=>$this->input->post('salerate') / $this->input->post('mlinbot'),
 				'packdate'=>$this->input->post('packdate'),
 				'expirydate'=>$this->input->post('expdate'),
 				'stripsinbox'=>$this->input->post('strips'),
 				'pcsinstrip'=>$this->input->post('pcs'),
-				'qtylimit'=>$this->input->post('qtylmt')
+				'qtylimit'=>$qtylmt
 				
 			);			
 		//print_r($data);

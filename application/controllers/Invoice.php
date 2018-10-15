@@ -250,43 +250,42 @@ class Invoice extends CI_Controller {
 			$this->index();			
 		}	
 		
-		$data['tempproddetails'] = $this->Product_model->get_temp_record_by_id($id);
-		
-		$uom = $data['tempproddetails']['product_uom'];
-		$batch = $data['tempproddetails']['batchno'];
-		$data['proddetails'] = $this->Product_model->get_record_by_batch($batch);
+		$tempproddetails = $this->Product_model->get_temp_record_by_id($id);
+		//print_r($data['tempproddetails'] );
+		$uom = $tempproddetails['product_uom'];
+		$batch = $tempproddetails['batchno'];
+		$proddetails = $this->Product_model->get_record_by_batch($batch);
 		
 		$this->Invoice_model->delete_record($id);
 		
 		if($uom === 'Boxs'){
-			$upqty = (int)$data['tempproddetails']['product_qty'] * (int)$data['proddetails']['stripsinbox'] * (int)$data['proddetails']['pcsinstrip'];
-			$stock = (int)$data['proddetails']['product_qty'] + (int)$upqty;
-			//print_r($stock);
+			$upqty = (int)$tempproddetails['product_qty'] * (int)$proddetails['stripsinbox'] * (int)$proddetails['pcsinstrip'];
+			$stock = (int)$proddetails['product_qty'] + (int)$upqty;
+			print_r($stock);
 			$data = array(
 				'product_qty'=>$stock,
 			);
-			
+			$this->Product_model->update_stock($data,$batch);
 			}else if($uom === 'Strips'){
-			$upqty = (int)$data['tempproddetails']['product_qty'] *  (int)$data['proddetails']['pcsinstrip'];
-			$stock = (int)$data['proddetails']['product_qty'] + (int)$upqty;
+			$upqty = (int)$tempproddetails['product_qty'] *  (int)$proddetails['pcsinstrip'];
+			$stock = (int)$proddetails['product_qty'] + (int)$upqty;
 			
 			//print_r($stock);
 			$data = array(
 				'product_qty'=>$stock,
 			);
+			$this->Product_model->update_stock($data,$batch);
 			}else if($uom === 'Pcs'){
-			$upqty = (int)$data['tempproddetails']['product_qty'];
-			$stock = (int)$data['proddetails']['product_qty'] + (int)$upqty;
+			$upqty = (int)$tempproddetails['product_qty'];
+			$stock = (int)$proddetails['product_qty'] + (int)$upqty;
 			//print_r($stock);
 			$data = array(
 				'product_qty'=>$stock,
 			);
+			$this->Product_model->update_stock($data,$batch);
 			}
 			
-			$this->Product_model->update_stock($data,$batch);
-		
-		
-		redirect(base_url().'Invoice/createinvoice');  
+		//redirect(base_url().'Invoice/createinvoice'); 
 	}
 	
 	public function prodcount_check($str)

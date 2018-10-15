@@ -24,10 +24,10 @@
                 <th>Product Code</th>
                 <th>Product Name</th>
                 <th>Batch Number</th>
-                <th>MRP[In pcs.]</th>
-                <th>Purchase Rate[In pcs.]</th>
-                <th>Sale Rate[In pcs.]</th>
-                <th>Product Qty[In pcs.]</th>
+                <th>MRP[In pcs/bottle.]</th>
+                <th>Purchase Rate[In pcs/ml.]</th>
+                <th>Sale Rate[In pcs/ml.]</th>
+                <th>Product Qty [In pcs/bottle.]</th>
                 <th>Expiry Date</th>
                  <?php if(strtoupper($_SESSION['USER_TYPE']) == 'ADMIN' || strtoupper($_SESSION['USER_TYPE']) == 'DOCTOR'){ ?>
                 <th>Actions</th>
@@ -43,15 +43,26 @@
                 <td><?php echo $row['product_code'];?></td>
                 <td title="<?php echo $row['abtproduct'];?>"><?php echo $row['product_name'];?></td>
                 <td><?php echo $row['batchno'];?></td>
-                <td align="center"><?php echo round(($row['mrp'] / $row['product_qty']),2) ;?></td>
-                <td align="center"><?php echo round(($row['purrate'] / $row['product_qty']),2);?></td>
-                <td align="center"><?php echo round(($row['salerate'] / $row['product_qty']),2);?></td>
+                <td align="center"><?php echo $row['mrp'];?></td>
+                <td align="center"><?php echo $row['purrate']?></td>
+                <td align="center"><?php echo $row['salerate']?></td>
 				
+				<?php if($row['product_type'] == "Tablet"){ ?>
 				<?php if($row['product_qty'] >= $row['qtylimit']){ ?>
                 <td align="center"><?php echo $row['product_qty'];?></td>
                 <?php }else{ ?>
 				<td title="This product have low stock" class="text-red" align="center"><b><?php echo $row['product_qty'];?></b></td>
 				<?php } ?>
+				 <?php }else if($row['product_type'] == "Liquid"){ ?>
+				<?php if($row['product_qty'] >= $row['qtylimit']){ ?>
+                <td align="center"><?php echo (int)($row['product_qty']/$row['mlinbottle'])?></td>
+                <?php }else{ ?>
+				<td title="This product have low stock" class="text-red" align="center"><b><?php echo (int)($row['product_qty']/$row['mlinbottle'])?></b></td>
+				<?php } ?>
+				<?php } ?>
+				
+				
+				
 				<?php if($row['expirydate'] >= date('Y-m-d')){ ?>
                 <td align="center"><?php echo $row['expirydate'];?></td>
 				<?php }else{ ?>
@@ -74,10 +85,10 @@
                 <th>Product Code</th>
                 <th>Product Name</th>
                 <th>Batch Number</th>
-                <th>MRP [In Pcs.]</th>
-                <th>Purchase Rate [In Pcs.]</th>
-                <th>Sale Rate [In Pcs.]</th>
-                <th>Product Qty [In Pcs.]</th>
+                <th>MRP[In pcs/bottle.]</th>
+                <th>Purchase Rate[In pcs/ml.]</th>
+                <th>Sale Rate[In pcs/ml.]</th>
+                <th>Product Qty [In pcs/bottle.]</th>
                 <th>Expiry Date</th>
                  <?php if(strtoupper($_SESSION['USER_TYPE']) == 'ADMIN' || strtoupper($_SESSION['USER_TYPE']) == 'DOCTOR'){ ?>
                 <th>Actions</th>
@@ -92,14 +103,22 @@
                 <td><?php echo $row['product_code'];?></td>
                 <td title="<?php echo $row['abtproduct'];?>"><?php echo $row['product_name'];?></td>
                 <td><?php echo $row['batchno'];?></td>
-                <td align="center"><?php echo $row['mrp'] ?></td>
+                <td align="center"><?php echo $row['mrp'];?></td>
                 <td align="center"><?php echo $row['purrate']?></td>
                 <td align="center"><?php echo $row['salerate']?></td>
 				
+				<?php if($row['product_type'] == "Tablet"){ ?>
 				<?php if($row['product_qty'] >= $row['qtylimit']){ ?>
                 <td align="center"><?php echo $row['product_qty'];?></td>
                 <?php }else{ ?>
 				<td title="This product have low stock" class="text-red" align="center"><b><?php echo $row['product_qty'];?></b></td>
+				<?php } ?>
+				 <?php }else if($row['product_type'] == "Liquid"){ ?>
+				<?php if($row['product_qty'] >= $row['qtylimit']){ ?>
+                <td align="center"><?php echo (int)($row['product_qty']/$row['mlinbottle'])?></td>
+                <?php }else{ ?>
+				<td title="This product have low stock" class="text-red" align="center"><b><?php echo (int)($row['product_qty']/$row['mlinbottle'])?></b></td>
+				<?php } ?>
 				<?php } ?>
 				<?php if($row['expirydate'] >= date('Y-m-d')){ ?>
                 <td align="center"><?php echo $row['expirydate'];?></td>
