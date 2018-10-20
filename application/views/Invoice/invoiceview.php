@@ -30,6 +30,7 @@
           <address>
 			<b>Name:</b> <?php echo $invoice_header['patient_name'] ?><br>
 			<b>Gender:</b> <?php echo $invoice_header['patient_gender'] ?><br>
+			<b>Age:</b> <?php echo $invoice_header['age'] ?><br>
 			<b>Address:</b> <?php echo $invoice_header['patient_address'] ?><br>
             <b>Phone:</b> <?php echo $invoice_header['patient_phoneno'] ?>
            </address>

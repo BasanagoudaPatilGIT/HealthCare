@@ -120,11 +120,13 @@ class Product extends CI_Controller {
 			redirect(base_url().'Product/productlist'); 
 		}else if($prodtype === "Liquid"){
 		$uom = $this->input->post('cbo_uom_bot');
-		$prodqty = $this->input->post('productqty');
+		
 		if($uom === 'Boxes'){
 			$prodqty = $this->input->post('productqty') * $this->input->post('botinbox') * $this->input->post('mlinbot');
 		}elseif($uom === 'Bottles'){
 			$prodqty = $this->input->post('productqty') * $this->input->post('mlinbot');
+		}elseif($uom === 'Ml'){
+			$prodqty = $this->input->post('productqty');
 		}
 		$qtylmt =  $this->input->post('qtylmt') * $this->input->post('mlinbot');
 		$batchno = $this->input->post('productcode').'-'.(String)$this->input->post('expdate').'-'.(int)$this->input->post('mrp').'-'.(int)$this->input->post('purrate').'-'.(int)$this->input->post('salerate');

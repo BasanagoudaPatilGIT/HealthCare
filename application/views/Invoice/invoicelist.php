@@ -24,6 +24,7 @@
 				 <th>Doctor Name</th>
                 <th>Patient Name</th>
                 <th>Patient Gender</th>
+                <th>Patient Age</th>
                 <th>Patient Phone No</th>
                <th>Invoice Amount</th>
               </tr>
@@ -38,6 +39,7 @@
                 <td><?php echo $row['first_name'];?>&nbsp;<?php echo $row['last_name'];?></td>
                 <td><?php echo $row['patient_name'];?></td>
 				<td><?php echo $row['patient_gender'];?></td>
+				<td><?php echo $row['age'];?></td>
 				<td><?php echo $row['patient_phoneno'];?></td>
 				<td><?php echo $row['invoice_amt'];?></td>
 				  
@@ -52,6 +54,7 @@
                 <th>Invoice Number</th>
                 <th>Patient Name</th>
                 <th>Patient Gender</th>
+				<th>Patient Age</th>
                 <th>Patient Phone No</th>
                <th>Invoice Amount</th>
               </tr>
@@ -65,6 +68,7 @@
 				title="Click to view details"><?php echo $row['invoice_no'];?></a></td>
                 <td><?php echo $row['patient_name'];?></td>
 				<td><?php echo $row['patient_gender'];?></td>
+				<td><?php echo $row['age'];?></td>
 				<td><?php echo $row['patient_phoneno'];?></td>
 				<td><?php echo $row['invoice_amt'];?></td>
 				</tr>

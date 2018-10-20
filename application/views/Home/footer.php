@@ -228,7 +228,7 @@ $('#qty').change(function(){
 	$bottlesinbox = $('#bottlesinbox').val();
 	
 	if($('#cbo_uom').val() == 'Boxes'){
-	if($('#qty').val() >= $stockinbox ){
+	if($('#qty').val() > $stockinbox ){
 	alert("Entered Qty is more than stock");
 	$('#qty').val('');
 	$('#lineamount').val('');
@@ -250,7 +250,7 @@ $('#qty').change(function(){
 	}
 	}else if($('#cbo_uom').val() == 'Strips'){
 	
-	if($('#qty').val() >= $stockinstrip ){
+	if($('#qty').val() > $stockinstrip ){
 	alert("Entered Qty is more than stock");
 	$('#qty').val('');
 	$('#lineamount').val('');
@@ -263,7 +263,7 @@ $('#qty').change(function(){
 	}
 	}else if($('#cbo_uom').val() == 'Pcs'){
 	
-	if($('#qty').val() >= $stockinpcs ){
+	if($('#qty').val() > $stockinpcs ){
 	alert("Entered Qty is more than stock");
 	$('#qty').val('');
 	$('#lineamount').val('');
@@ -275,7 +275,7 @@ $('#qty').change(function(){
 	$('#lineamount').val($amt);
 	}
 	}else if($('#cbo_uom').val() == 'Bottles'){
-			if($('#qty').val() >= $stockinbottle ){
+			if($('#qty').val() > $stockinbottle ){
 			alert("Entered Qty is more than stock");
 			$('#qty').val('');
 			$('#lineamount').val('');
@@ -287,7 +287,12 @@ $('#qty').change(function(){
 			$('#lineamount').val($amt);
 			}
 	}else if($('#cbo_uom').val() == 'Ml'){
-			if($('#qty').val() >= $stockinpcs ){
+			$qty = $('#qty').val(); 
+			if($qty > $stockinpcs ){
+			alert($('#qty').val());
+			alert($stockinpcs);
+			$total =$stockinpcs + $qty; 
+			alert($total);
 			alert("Entered Qty is more than stock");
 			$('#qty').val('');
 			$('#lineamount').val('');

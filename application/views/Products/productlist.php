@@ -23,6 +23,7 @@
                 <th>User Name</th>
                 <th>Product Code</th>
                 <th>Product Name</th>
+                <th>Product Type</th>
                 <th>Batch Number</th>
                 <th>MRP[In pcs/bottle.]</th>
                 <th>Purchase Rate[In pcs/ml.]</th>
@@ -42,6 +43,7 @@
                 <td><?php echo $row['first_name'];?></td>
                 <td><?php echo $row['product_code'];?></td>
                 <td title="<?php echo $row['abtproduct'];?>"><?php echo $row['product_name'];?></td>
+                <td><?php echo $row['product_type'];?></td>
                 <td><?php echo $row['batchno'];?></td>
                 <td align="center"><?php echo $row['mrp'];?></td>
                 <td align="center"><?php echo $row['purrate']?></td>
@@ -84,6 +86,7 @@
               <tr><th>Sl No.</th>
                 <th>Product Code</th>
                 <th>Product Name</th>
+				<th>Product Type</th>
                 <th>Batch Number</th>
                 <th>MRP[In pcs/bottle.]</th>
                 <th>Purchase Rate[In pcs/ml.]</th>
@@ -102,7 +105,8 @@
               <tr><td><?php echo $slno; ?></td>
                 <td><?php echo $row['product_code'];?></td>
                 <td title="<?php echo $row['abtproduct'];?>"><?php echo $row['product_name'];?></td>
-                <td><?php echo $row['batchno'];?></td>
+				<td><?php echo $row['product_type'];?></td>
+                <td><?php echo $row['batchno'];?></td> 
                 <td align="center"><?php echo $row['mrp'];?></td>
                 <td align="center"><?php echo $row['purrate']?></td>
                 <td align="center"><?php echo $row['salerate']?></td>
