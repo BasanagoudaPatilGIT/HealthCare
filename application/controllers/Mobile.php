@@ -217,33 +217,71 @@ class Mobile extends CI_Controller {
 	    $prodtype = $this->input->post('producttype');
 		$productcount = (int)$this->input->post('productcount');
 		$uom = $this->input->post('cbo_uom');
-		$prodqty = $this->input->post('productqty');
+		$prodqty = (int)$this->input->post('productqty');
 		$userId = $this->input->post('userId');
 		$entId = $this->input->post('entId');
 		$prodcode = $this->input->post('productcode');
 		//print_r($uom);
-		if($uom === 'Boxes'){
-			if($prodtype === "Tablet"){
-				$prodqty = $this->input->post('productqty') * $this->input->post('strips') * $this->input->post('pcs');
-			}else if($prodtype === "Liquid"){
-				$prodqty = $this->input->post('productqty') * $this->input->post('botinbox') * $this->input->post('mlinbot');
+		
+		print_r($prodtype);
+		print_r(" | ");
+		print_r($productcount);
+		print_r(" | ");
+		print_r($uom);
+		print_r(" | ");
+		print_r($prodqty);
+		print_r(" | ");
+		print_r($userId);
+		print_r(" | ");
+		print_r($entId);
+		print_r(" | ");		
+		print_r($this->input->post('productname'));
+		print_r(" | ");
+		if($uom == 'Boxes'){
+			if($prodtype == "Tablet"){
+				$prodqty = $prodqty * (int)$this->input->post('strips') * (int)$this->input->post('pcs');
+				print_r($this->input->post('strips'));
+				print_r(" | ");
+				print_r($this->input->post('pcs'));
+				print_r(" | ");
+			    print_r($prodqty);
+				print_r(" | ");
+			}else if($prodtype == "Liquid"){
+				$prodqty = $prodqty * (int)$this->input->post('botinbox') * (int)$this->input->post('mlinbot');
+				print_r($this->input->post('botinbox'));
+				print_r(" | ");
+				print_r($this->input->post('mlinbot'));
+				print_r(" | ");
+				print_r($prodqty);
+				print_r(" | ");
 			}
 			
-		}elseif($uom === 'Strips'){
+		}elseif($uom == 'Strips'){
+			print_r($uom);
+			$prodqty = $prodqty * (int)$this->input->post('pcs');
+			print_r($this->input->post('pcs'));
+			print_r(" | ");
+			print_r($prodqty);
+			print_r(" | ");
+		}elseif($uom == 'Pcs'){
 			//print_r($uom);
-			$prodqty = $this->input->post('productqty') * $this->input->post('pcs');
-		}elseif($uom === 'Pcs'){
-			//print_r($uom);
-			$prodqty = $this->input->post('productqty');
-		}elseif($uom === 'Bottles'){
-			$prodqty = $this->input->post('productqty') * $this->input->post('mlinbot');
-		}elseif($uom === 'Ml'){
-			$prodqty = $this->input->post('productqty');
+			$prodqty = $prodqty;
+			print_r($prodqty);
+			print_r(" | ");
+		}elseif($uom == 'Bottles'){
+			$prodqty = $prodqty * (int)$this->input->post('mlinbot');
+			print_r($this->input->post('mlinbot'));
+			print_r(" | ");
+			print_r($prodqty);
+			print_r(" | ");
+		}elseif($uom == 'Ml'){
+			$prodqty = $prodqty;
 		}
 		
 		$batchno = $prodcode.'-'.(String)$this->input->post('expdate').'-'.(int)$this->input->post('mrp').'-'.(int)$this->input->post('purrate').'-'.(int)$this->input->post('salerate');
 		
-		if($prodtype === "Tablet"){
+		
+		if($prodtype == "Tablet"){
 		$data =array
 			(
 				'status'=>'Active',
@@ -263,11 +301,15 @@ class Mobile extends CI_Controller {
 				'mlinbottle'=>1,
 				'pcsinstrip'=>$this->input->post('pcs'),
 				'qtylimit'=>$this->input->post('qtylmt'),
-				'tax_percent'=>$this->input->post('taxper')
+				'tax_percent'=>$this->input->post('taxper'),
+				'product_type'=>$prodtype
 				
 			);	
 			$this->Product_model->add_record($data);
-		}else if($prodtype === "Liquid"){
+		}else if($prodtype == "Liquid"){
+			//$mrp=(double)$this->input->post('mrp') / (double)$this->input->post('mlinbot');
+			//$purrate=(double)$this->input->post('purrate') / (double)$this->input->post('mlinbot');
+			//$salerate=(double)$this->input->post('salerate') / (double)$this->input->post('mlinbot');
 			$data =array
 			(
 				'status'=>'Active',
@@ -277,9 +319,12 @@ class Mobile extends CI_Controller {
 				'product_qty'=>$prodqty,
 				'abtproduct'=>$this->input->post('abtproduct'),
 				'batchno'=>$batchno,
-				'mrp'=>$this->input->post('mrp') / $this->input->post('mlinbot'),
-				'purrate'=>$this->input->post('purrate') / $this->input->post('mlinbot'),
-				'salerate'=>$this->input->post('salerate') / $this->input->post('mlinbot'),
+				//'mrp'=>$mrp,
+				//'purrate'=>$purrate,
+				//'salerate'=>$salerate,
+				'mrp'=>$this->input->post('mrp'),
+				'purrate'=>$this->input->post('purrate'),
+				'salerate'=>$this->input->post('salerate'),
 				'packdate'=>$this->input->post('packdate'),
 				'expirydate'=>$this->input->post('expdate'),
 				'bottlesinbox'=>$this->input->post('botinbox'),
@@ -294,16 +339,16 @@ class Mobile extends CI_Controller {
 			$this->Product_model->add_record($data);
 		}
 			
-			$datestring = date('Y-m-d');			
-			$data =array
-			(
-				'last_updated'=>mdate($datestring),
-				'continues_count' => (int)$productcount + 1 
+			 $datestring = date('Y-m-d');			
+			 $data =array
+			 (
+				 'last_updated'=>mdate($datestring),
+				 'continues_count' => (int)$productcount + 1 
 				
-			);
+			 );
 		
-			$this->Mobile_model->incriment_productcode_no($data,$entId);
-			
+			 $this->Mobile_model->incriment_productcode_no($data,$entId);
+			 
 			$new_product_added[] = array('message' => 'New medicine added successfully');
 				
 			print_r(json_encode($new_product_added));
@@ -568,51 +613,102 @@ class Mobile extends CI_Controller {
 		$data = json_decode($data);
 		
 		for($i=0; $i <= count($data); $i++){
-		print_r($data[$i]->{'productId'});
+		
+		$prodId = $data[$i]->{'productId'};
+		$prodName = $data[$i]->{'productName'};	
+		$prodCode = $data[$i]->{'productCode'};	
+		$prodType = $data[$i]->{'productType'};
+		$prodSaleRate = (int)$data[$i]->{'productSaleRate'};	
+		$prodTaxPer = (int)$data[$i]->{'productTaxPer'};	
+		$prodTaxAmt = $data[$i]->{'productTaxAmt'};	
+		$prodUOM = $data[$i]->{'productUOM'};
+		$prodQty = $data[$i]->{'productQty'};
+		$prodGross = $data[$i]->{'productGross'};
+		$prodTotal = $data[$i]->{'productTotal'};
+		$prodStock = $data[$i]->{'productStock'};	
+		$prodBatchNo = $data[$i]->{'productBatchNo'};	
 		
 		
-		print_r($data[$i]->{'productName'});	
+		$productDetails = $this->Invoice_model->get_prod_details_by_batch($prodBatchNo);
 		
-		
-		print_r($data[$i]->{'productCode'});	
-		
-		
-		print_r($data[$i]->{'productType'});
-		
+		$data =array
+			(
+				'product_id'=>$prodId,
+				'product_code'=>$prodCode,
+				'product_name'=>$prodName,
+				'product_type'=>$prodtype,
+				'batchno'=>$prodBatchNo,
+				'stock'=>$prodStock,
+				'sale_rate'=>$prodSaleRate,
+				'tax_percent'=>$prodTaxPer,
+				'product_uom'=>$prodUOM,
+				'product_qty'=>$prodQty,
+				'sub_total'=>$prodGross,
+				'tax_amount'=>$prodTaxAmt,
+				'total'=> round($prodTotal),
+				'user_id'=>$userId
+			);			
 			
-		print_r($data[$i]->{'productSaleRate'});	
-		
-		
-		print_r($data[$i]->{'productTaxPer'});	
-		
-		
-		print_r($data[$i]->{'productTaxAmt'});	
-		
-		
-		print_r($data[$i]->{'productUOM'});
-		
-			
-		print_r($data[$i]->{'productQty'});
-		
-			
-		print_r($data[$i]->{'productGross'});
-		
-		
-		print_r($data[$i]->{'productTotal'});
-		
-			
-		print_r($data[$i]->{'productTotal'});
-		
+			$this->Invoice_model->add_invoice_record($data);
+			if($prodUOM == 'Boxes'){
 				
-		print_r($data[$i]->{'productStock'});	
+				if($prodtype == "Tablet"){
+					$upqty = (int)$prodQty * (int)$productDetails['stripsinbox'] * (int)$productDetails['pcsinstrip'];
+					$stock = (int)$productDetails['product_qty'] - (int)$upqty;
+					//print_r($stock);
+					$data = array(
+						'product_qty'=>$stock,
+					);
+					$this->Product_model->update_stock($data,$prodBatchNo);
+				}elseif($prodtype == "Liquid"){
+					$upqty = (int)$prodQty  * (int)$productDetails['bottlesinbox'] * (int)$productDetails['mlinbottle'];
+					$stock = (int)$productDetails['product_qty'] - (int)$upqty;
+					//print_r($this->input->post('qty'));
+					$data = array(
+						'product_qty'=>$stock,
+					);
+					$this->Product_model->update_stock($data,$prodBatchNo);
+					}
+			
+			
+				}else if($prodUOM == 'Strips'){
+				$upqty = (int)$prodQty * (int)$productDetails['pcsinstrip'];
+				$stock = (int)$productDetails['product_qty'] - (int)$upqty;
+				//print_r($stock);
+				$data = array(
+					'product_qty'=>$stock,
+				);
+				$this->Product_model->update_stock($data,$prodBatchNo);
+				}else if($prodUOM == 'Pcs'){
+				$upqty = (int)$prodQty;
+				$stock = (int)$productDetails['product_qty'] - (int)$upqty;
+				//print_r($stock);
+				$data = array(
+					'product_qty'=>$stock,
+				);
+				$this->Product_model->update_stock($data,$prodBatchNo);
+				}else if($prodUOM == 'Bottles'){
+				$upqty = (int)$prodQty * (int)$productDetails['mlinbottle'];
+				$stock = (int)$productDetails['product_qty'] - (int)$upqty;
+				//print_r($this->input->post('qty'));
+				$data = array(
+					'product_qty'=>$stock,
+				);
+				$this->Product_model->update_stock($data,$prodBatchNo);
+				}else if($prodUOM == 'Ml'){
+				$upqty = (int)$prodQty;
+				//print_r($upqty);
+				$stock = (int)$productDetails['product_qty'] - (int)$upqty;
+				//print_r($this->input->post('qty'));
+				$data = array(
+					'product_qty'=>$stock,
+				);
+				$this->Product_model->update_stock($data,$prodBatchNo);
+				}
 		
+			}
 			
-		print_r($data[$i]->{'productBatchNo'});	
-		
-		}
-			
-			
-		$datestring = date('Y-m-d');			
+			$datestring = date('Y-m-d');			
 			$data =array
 			(
 				'last_updated'=>mdate($datestring),
@@ -620,7 +716,7 @@ class Mobile extends CI_Controller {
 				
 			);
 			//print_r($data);
-			$this->Mobile_model->incriment_invoice_no($data,$entId);*/
+			$this->Mobile_model->incriment_invoice_no($data,$entId);
 			
 			$new_invoice_generated = array('message' => 'Invoice generated successfully');
 				
@@ -641,5 +737,26 @@ class Mobile extends CI_Controller {
 		$this->Mobile_model->update_logout($data,$userid);				
 		
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

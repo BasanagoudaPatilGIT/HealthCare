@@ -189,7 +189,15 @@ class Mobile_model extends CI_Model
     return $this->db->insert('tab_invoice_h', $data);
     }
 	
+	public function get_prod_details_by_batch($prodBatchNo)
+    {
+	$this->db->select('p.*');
+	$this->db->from('tab_product as p');
+	$this->db->where('p.batchno', $prodBatchNo);
+	$query = $this->db->get();
 	
+	return $query->row_array();
+    }
 	
 	
 	
