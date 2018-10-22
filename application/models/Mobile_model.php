@@ -147,4 +147,61 @@ class Mobile_model extends CI_Model
     $query = $this->db->get();		
     return $query->result_array();
     }
+	
+		public function add_invoice_record($data)
+    {
+    //SELECT MAX ID
+    $max_id = 1;
+	$invoice_id = 1;
+    $this->db->select_max('id');
+    $query = $this->db->get('tab_invoice_d');
+    $row = $query->row();
+    if (isset($row))
+    {
+    $max_id = $row->id + 1;
+    }
+	$this->db->select_max('id');
+	$query1 = $this->db->get('tab_invoice_h');
+    $row1 = $query1->row();
+    if (isset($row1))
+    {
+    $invoice_id = $row1->id;
+    }
+    
+    $data['id'] = $max_id;
+	$data['invoiceh_id']= $invoice_id;
+    return $this->db->insert('tab_invoice_d', $data);
+    }
+	
+	public function add_patient_record($data)
+    {
+    //SELECT MAX ID
+    $max_id = 1;
+    $this->db->select_max('id');
+    $query = $this->db->get('tab_invoice_h');
+    $row = $query->row();
+    if (isset($row))
+    {
+    $max_id = $row->id + 1;
+    }
+    
+    $data['id'] = $max_id;
+    return $this->db->insert('tab_invoice_h', $data);
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
  }

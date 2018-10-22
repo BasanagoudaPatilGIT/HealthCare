@@ -95,7 +95,7 @@ class Mobile extends CI_Controller {
 		
 		}else
 		{
-			$login_failed_data[] = array('loginFailed' => 'Invalid Credentials');
+			$login_failed_data[] = array('message' => 'Invalid Credentials');
 			print_r(json_encode($login_failed_data));				
 		}
 		
@@ -143,7 +143,7 @@ class Mobile extends CI_Controller {
 				
 		print_r(json_encode($low_stock_data));
 		}else{
-		$no_low_stock_data[] = array('noItems' => 'No Items Found.'
+		$no_low_stock_data[] = array('message' => 'No Items Found.'
 				);
 				
 		print_r(json_encode($no_low_stock_data));
@@ -152,8 +152,8 @@ class Mobile extends CI_Controller {
 	
 	public function stockdetails()
 	{
-		//$userid = 2;
-		$userid = $this->input->post('userId');
+		$userid = 2;
+		//$userid = $this->input->post('userId');
 		$stock = $this->Mobile_model->stock_details('DESC',$userid);				
 		
 		if(count($stock) >0){
@@ -188,7 +188,7 @@ class Mobile extends CI_Controller {
 				
 		print_r(json_encode($all_stock_data));
 		}else{
-		$no_stock_data[] = array('noItems' => 'No Items Found.'
+		$no_stock_data[] = array('message' => 'No Items Found.'
 				);
 				
 		print_r(json_encode($no_stock_data));
@@ -304,7 +304,7 @@ class Mobile extends CI_Controller {
 		
 			$this->Mobile_model->incriment_productcode_no($data,$entId);
 			
-			$new_product_added[] = array('prodAdded' => 'New medicine added successfully');
+			$new_product_added[] = array('message' => 'New medicine added successfully');
 				
 			print_r(json_encode($new_product_added));
 	}
@@ -465,7 +465,7 @@ class Mobile extends CI_Controller {
 			$this->Product_model->add_record($data);
 		}
 		
-			$product_updated[] = array('produpdated' => 'medicine updated successfully');
+			$product_updated[] = array('message' => 'medicine updated successfully');
 				
 			print_r(json_encode($product_updated));
 
@@ -491,11 +491,11 @@ class Mobile extends CI_Controller {
 	public function invoiceList()
 	{
 	$userId = $this->input->post('userId');
-	$invoice = $this->Mobile_model->view_invoice_details('DESC',$userId=2);
+	$invoice = $this->Mobile_model->view_invoice_details('DESC',$userId);
 	
-	/*echo "<pre>";
+	/*
 	print_r($invoice);
-	echo "</pre>";*/
+	*/
 					
 	if(count($invoice) >0){
 		foreach($invoice as $row)
@@ -524,7 +524,7 @@ class Mobile extends CI_Controller {
 				
 		print_r(json_encode($all_invoice_data));
 		}else{
-		$no_invoice_data[] = array('noItems' => 'No Items Found.'
+		$no_invoice_data[] = array('message' => 'No Items Found.'
 				);
 				
 		print_r(json_encode($no_invoice_data));
@@ -539,65 +539,80 @@ class Mobile extends CI_Controller {
 	{
 		$userId = $this->input->post('userId');
 		$entId = $this->input->post('entId');
-		$invoicecount = (int)$this->input->post('invoicecount');
-		
-		/* $auto_code = $this->Product_model->get_productcode($userId);
-	    $lineinvoice = $this->Invoice_model->view_record('DESC');
-		$Mainsubtotal = $this->Invoice_model->get_total_amount($userId);
-		$Maintaxpercent = $this->Invoice_model->get_total_tax_percent($userId);
-		$MaintaxAmt = $this->Invoice_model->get_total_tax_amt($userId);
-		$MainAmt = $this->Invoice_model->get_total_amt($userId);
-		$prodcount = $this->Invoice_model->products_count($userId) ;
+		$invoicecount = (int)$this->input->post('invoiceCount');
 		
 		
-		$uom = $this->input->post('cbo_uom');
-		$batch = $this->input->post('batchno');
+		$datestring = date('Y-m-d');
 		$data =array
 			(
-				'product_id'=>$this->input->post('productid'),
-				'product_code'=>$this->input->post('productcode'),
-				'product_name'=>$this->input->post('productname'),
-				'batchno'=>$batch,
-				'stock'=>$this->input->post('stock'),
-				'sale_rate'=>$this->input->post('salerate'),
-				'tax_percent'=>$this->input->post('tax'),
-				'product_uom'=>$uom,
-				'product_qty'=>$this->input->post('qty'),
-				'sub_total'=>$this->input->post('lineamount'),
-				'tax_amount'=>$this->input->post('linetaxamt'),
-				'total'=> round($this->input->post('linetaxamt') + $this->input->post('lineamount')),
-				'user_id'=>$_SESSION['ID']
+				'user_id'=>$userId,
+				'patient_name'=>$this->input->post('patientName'),
+				'patient_gender'=>$this->input->post('patientGender'),
+				'patient_phoneno'=>$this->input->post('patientPhNo'),
+				'age'=>$this->input->post('patientAge'),
+				'patient_address'=>$this->input->post('patientAdd'),
+				'invoice_amt'=>$this->input->post('invoiceTotal'),
+				'total_tax_amt'=>$this->input->post('invoiceTax'),
+				'created_date'=>$datestring,
+				'fees'=>$this->input->post('invoiceFees'),
+				'total_gross_amt'=>$this->input->post('invoiceGross'),
+				'invoice_no'=>$this->input->post('invoiceCode'),
+				
 			);			
 			
-			$this->Invoice_model->add_record($data);
-			if($uom === 'Boxs'){
-			$upqty = (int)$this->input->post('qty') * (int)$this->input->post('stripsinbox') * (int)$this->input->post('pcsinstrip');
-			$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
-			//print_r($stock);
-			$data = array(
-				'product_qty'=>$stock,
-			);
-			
-			}else if($uom === 'Strips'){
-			$upqty = (int)$this->input->post('qty') * (int)$this->input->post('pcsinstrip');
-			$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
-			//print_r($stock);
-			$data = array(
-				'product_qty'=>$stock,
-			);
-			}else if($uom === 'Pcs'){
-			$upqty = (int)$this->input->post('qty');
-			$stock = (int)$this->input->post('stockinpcs') - (int)$upqty;
-			//print_r($stock);
-			$data = array(
-				'product_qty'=>$stock,
-			);
-			}
-			
-			$this->Product_model->update_stock($data,$batch); */
-			
+		$this->Mobile_model->add_patient_record($data);
 		
-			$datestring = date('Y-m-d');			
+		
+		$data = $this->input->post('invoiceProductList');
+		
+		$data = json_decode($data);
+		
+		for($i=0; $i <= count($data); $i++){
+		print_r($data[$i]->{'productId'});
+		
+		
+		print_r($data[$i]->{'productName'});	
+		
+		
+		print_r($data[$i]->{'productCode'});	
+		
+		
+		print_r($data[$i]->{'productType'});
+		
+			
+		print_r($data[$i]->{'productSaleRate'});	
+		
+		
+		print_r($data[$i]->{'productTaxPer'});	
+		
+		
+		print_r($data[$i]->{'productTaxAmt'});	
+		
+		
+		print_r($data[$i]->{'productUOM'});
+		
+			
+		print_r($data[$i]->{'productQty'});
+		
+			
+		print_r($data[$i]->{'productGross'});
+		
+		
+		print_r($data[$i]->{'productTotal'});
+		
+			
+		print_r($data[$i]->{'productTotal'});
+		
+				
+		print_r($data[$i]->{'productStock'});	
+		
+			
+		print_r($data[$i]->{'productBatchNo'});	
+		
+		}
+			
+			
+		$datestring = date('Y-m-d');			
 			$data =array
 			(
 				'last_updated'=>mdate($datestring),
@@ -605,9 +620,9 @@ class Mobile extends CI_Controller {
 				
 			);
 			//print_r($data);
-			$this->Mobile_model->incriment_invoice_no($data,$entId);
+			$this->Mobile_model->incriment_invoice_no($data,$entId);*/
 			
-			$new_invoice_generated[] = array('invoicegenerated' => 'Invoice generated successfully');
+			$new_invoice_generated = array('message' => 'Invoice generated successfully');
 				
 			print_r(json_encode($new_invoice_generated));
 			
