@@ -30,9 +30,9 @@ class Product extends CI_Controller {
 		$this->form_validation->set_rules('productname','Product Name','required');
 		$this->form_validation->set_rules('productname','Product Name','required');
 		$this->form_validation->set_rules('productqty','Product Qty','required|numeric');
-		$this->form_validation->set_rules('mrp','MRP','required|numeric|is_natural_no_zero');
-		$this->form_validation->set_rules('purrate','Purchase Rate','required|numeric|is_natural_no_zero');
-		$this->form_validation->set_rules('salerate','Sale Rate','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('mrp','MRP','required|Decimal');
+		$this->form_validation->set_rules('purrate','Purchase Rate','required|decimal');
+		$this->form_validation->set_rules('salerate','Sale Rate','required|decimal');
 		$this->form_validation->set_rules('packdate','Pack Date','required');
 		$this->form_validation->set_rules('expdate','Expiry Date','required');
 		$this->form_validation->set_rules('qtylmt','Quantity Limit','required|numeric|is_natural_no_zero');
@@ -96,7 +96,9 @@ class Product extends CI_Controller {
 				'pcsinstrip'=>$this->input->post('pcs'),
 				'qtylimit'=>$this->input->post('qtylmt'),
 				'tax_percent'=>$this->input->post('taxper'),
-				'product_type'=>$prodtype
+				'product_type'=>$prodtype,
+				'bottlesinbox'=>1,
+				'mlinbottle'=>1
 				
 			);	
 			$this->Product_model->add_record($data);
@@ -151,7 +153,9 @@ class Product extends CI_Controller {
 				'mlinbottle'=>$this->input->post('mlinbot'),
 				'qtylimit'=>$qtylmt,
 				'tax_percent'=>$this->input->post('taxper'),
-				'product_type'=>$prodtype
+				'product_type'=>$prodtype,
+				'stripsinbox'=>1,
+				'pcsinstrip'=>1,
 				
 			);	
 			$this->Product_model->add_record($data);
@@ -196,9 +200,9 @@ class Product extends CI_Controller {
 		$this->form_validation->set_rules('productcode','Product Code','required');
 		$this->form_validation->set_rules('productname','Product Name','required');
 		$this->form_validation->set_rules('productqty','Product Qty','required|numeric');
-		$this->form_validation->set_rules('mrp','MRP','required|numeric|is_natural_no_zero');
-		$this->form_validation->set_rules('purrate','Purchase Rate','required|numeric|is_natural_no_zero');
-		$this->form_validation->set_rules('salerate','Sale Rate','required|numeric|is_natural_no_zero');
+		$this->form_validation->set_rules('mrp','MRP','required|decimal');
+		$this->form_validation->set_rules('purrate','Purchase Rate','required|decimal');
+		$this->form_validation->set_rules('salerate','Sale Rate','required|decimal');
 		$this->form_validation->set_rules('packdate','Pack Date','required');
 		$this->form_validation->set_rules('expdate','Expiry Date','required');
 		$this->form_validation->set_rules('qtylmt','Quantity Limit','required|numeric|is_natural_no_zero');
@@ -260,7 +264,9 @@ class Product extends CI_Controller {
 				'stripsinbox'=>$this->input->post('strips'),
 				'pcsinstrip'=>$this->input->post('pcs'),
 				'qtylimit'=>$this->input->post('qtylmt'),
-				'tax_percent'=>$this->input->post('taxper')
+				'tax_percent'=>$this->input->post('taxper'),
+				'bottlesinbox'=>1,
+				'mlinbottle'=>1,
 				
 			);			
 		//print_r($data);
@@ -295,7 +301,9 @@ class Product extends CI_Controller {
 				'expirydate'=>$this->input->post('expdate'),
 				'stripsinbox'=>$this->input->post('strips'),
 				'pcsinstrip'=>$this->input->post('pcs'),
-				'qtylimit'=>$this->input->post('qtylmt')
+				'qtylimit'=>$this->input->post('qtylmt'),
+				'bottlesinbox'=>1,
+				'mlinbottle'=>1,
 				
 			);			
 		//print_r($data);
@@ -324,7 +332,6 @@ class Product extends CI_Controller {
 		}elseif($uom === 'Bottles'){
 			$prodqty = $this->input->post('productqty') * $this->input->post('mlinbot')+($this->input->post('curqty') * $this->input->post('mlinbot')) ;
 		}
-		$qtylmt =  $this->input->post('qtylmt') * $this->input->post('mlinbot');
 		$data =array
 			(
 				'status'=>'Active',
@@ -341,8 +348,10 @@ class Product extends CI_Controller {
 				'expirydate'=>$this->input->post('expdate'),
 				'stripsinbox'=>$this->input->post('strips'),
 				'pcsinstrip'=>$this->input->post('pcs'),
-				'qtylimit'=>$qtylmt,
-				'tax_percent'=>$this->input->post('taxper')
+				'qtylimit'=>$this->input->post('qtylmt'),
+				'tax_percent'=>$this->input->post('taxper'),
+				'stripsinbox'=>1,
+				'pcsinstrip'=>1,
 				
 			);			
 		//print_r($data);
@@ -372,7 +381,9 @@ class Product extends CI_Controller {
 				'expirydate'=>$this->input->post('expdate'),
 				'stripsinbox'=>$this->input->post('strips'),
 				'pcsinstrip'=>$this->input->post('pcs'),
-				'qtylimit'=>$qtylmt
+				'qtylimit'=>$this->input->post('qtylmt'),
+				'stripsinbox'=>1,
+				'pcsinstrip'=>1,
 				
 			);			
 		//print_r($data);

@@ -45,6 +45,8 @@ class Combo_model extends CI_Model
         return $result_combo = array_combine($id, $value);
     }
 	
+	
+	
 	function cbo_allproject_versions()
     { 
         $this->db->select('id');
@@ -303,6 +305,25 @@ class Combo_model extends CI_Model
         return $result_combo = array_combine($id, $value);
     }
 	
+	function cbo_doctor($usertype='2')
+    { 
+       $this->db->select('r.id');
+        $this->db->select('r.first_name,r.last_name');
+        $this->db->from('tab_registration r');
+		$this->db->where('user_type',$usertype);
+        $query = $this->db->get();
+        $result = $query->result();
+
+        $id = array('');
+        $value = array('-SELECT-');
+
+        for ($i = 0; $i < count($result); $i++)
+        {
+            array_push($id, $result[$i]->id);
+			array_push($value, 'Dr. '.$result[$i]->first_name . ' ' .$result[$i]->last_name);
+        }
+        return $result_combo = array_combine($id, $value);
+    }
 	
 	
 }

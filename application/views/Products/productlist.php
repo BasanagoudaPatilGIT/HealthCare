@@ -6,16 +6,23 @@
       <div class="box">
 	  <div class="box-header with-border">
           <h3 class="box-title"><i class="fa fa-list" style="font-size:16px;color:#3c8dbc"></i> Products List </h3>
-		  <?php if(strtoupper($_SESSION['USER_TYPE']) == 'ADMIN' || strtoupper($_SESSION['USER_TYPE']) == 'DOCTOR'){?>
+		 
 		  <a class="btn btn-primary btn-sm pull-right" href="<?php echo base_url(); ?>Product/addproduct">
 		  <i class="fa fa-plus fa-fw"></i>Add New</a>
+		   
+		  <?php if(strtoupper($_SESSION['USER_TYPE']) == 'ADMIN' ){?>
+		  <a class="btn btn-primary btn-sm pull-right" href="<?php echo base_url(); ?>Excel/uploadmedicine">
+		  <i class="fa fa-plus fa-fw"></i>Upload Medicine</a>
 		  <?php } ?>
         </div>
 		<div style="color:#FF0000; padding:10px">
           <?php echo $this->session->flashdata('msg'); ?>
           </div>
         <div class="box-body">
-          <div class="col-md-12" >
+          <div class="col-md-12"  style="padding:10px" >
+		   <span><b>Template Link: </b></span><a href="" id="template"><strong>Download Template</strong></a>
+		   </div>
+		   <div class="col-md-12" >
 		  <?php if(strtoupper($_SESSION['USER_TYPE']) == 'ADMIN'){ ?>
           <table id="example1" class="table table-bordered table-striped table-responsive table-hover">
             <thead>

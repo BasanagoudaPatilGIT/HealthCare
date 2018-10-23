@@ -84,7 +84,12 @@ $('#expdate').datepicker({
 	todayHighlight:true,
 });
 </script>
-
+<script>
+//Template
+$('#template').click( function(){
+window.location="<?php echo base_url();?>Excel/medicine_template";
+})
+</script>
 
 <script>
 $(document).ready(function() {

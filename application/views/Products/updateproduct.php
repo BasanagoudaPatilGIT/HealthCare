@@ -237,7 +237,7 @@
                   <label style="color:#FF0000"> *</label>
                   </label>
                   <input class="form-control" id="qtylmt" name="qtylmt" type="text" placeholder="Quantity Limit"
-					 value="<?php echo $product_row['qtylimit'] / $product_row['mlinbottle'] ?>" onKeyUp="isnum(this)">
+					 value="<?php echo $product_row['qtylimit']  ?>" onKeyUp="isnum(this)">
                   <?php echo form_error('qtylimit','<div style="color:#FF0000;">','</div>'); ?> 
 				  </div>
 				<div class="form-group col-md-12">
