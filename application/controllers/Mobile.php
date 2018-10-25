@@ -550,6 +550,20 @@ class Mobile extends CI_Controller {
 		$entId = $this->input->post('entId');
 		$invoicecount = (int)$this->input->post('invoiceCount');
 		
+		print_r($userId.' | ');
+		print_r($entId.' | ');
+		print_r($invoicecount.' | ');
+		
+		print_r($this->input->post('patientName').' | ');
+		print_r($this->input->post('patientGender').' | ');
+		print_r($this->input->post('patientPhNo').' | ');
+		print_r($this->input->post('patientAge').' | ');
+		print_r($this->input->post('patientAdd').' | ');
+		print_r($this->input->post('invoiceTotal').' | ');
+		print_r($this->input->post('invoiceTax').' | ');
+		print_r($this->input->post('invoiceFees').' | ');
+		print_r($this->input->post('invoiceGross').' | ');
+		print_r($this->input->post('invoiceCode').' | ');
 		
 		$datestring = date('Y-m-d');
 		$data =array
